@@ -11,6 +11,7 @@
     2. sushi -o -i input_file.wav -c /home/mind/config_files/config_offline_mode_play.json 
         - local에서 파일을 재생시키는 명령어이다.
         - 위의 커맨드를 칠 경우 앞 서 말했다시피 디렉터리가 없다고 뜬다 ---> 확인해보니 rtdm 드라이버가 안깔려 있음
+          - rtdm 드라이버란 elk os 전용 오디오 드라이버임
         - 그래서 elk os sdk 설치 --> rtdm 오디오 드라이버 재설치 --> 성공!?
 - 이론적으로는 aconnect로 input 과 output을 지정해주면 소리를 바로 재생할 수 있다.
   - 악기가 없는 경우 그냥 vmpk(가상의 키보드를 설치하여 사용하면 된다.)
