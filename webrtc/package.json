@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
+  "scripts": {
+    "dev": "nodemon"
+  },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
@@ -11,6 +14,8 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
-    "i": "^0.3.7"
+    "express": "^4.17.3",
+    "i": "^0.3.7",
+    "pug": "^3.0.2"
   }
 }
