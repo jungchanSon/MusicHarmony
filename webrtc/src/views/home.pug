@@ -6,5 +6,10 @@ html(lang="en")
         meta(name="viewport", content="width=device-width")
         title noom
     body
-        h1 it work!
+        header
+            h1 Noom
+        main
+            video#myFace(autoplay, playsinline, width=400, height=400)
+
+        script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
