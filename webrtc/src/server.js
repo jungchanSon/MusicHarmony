@@ -2,6 +2,8 @@ import express from "express";
 
 const app = express();
 
-console.log("new project");
+app.set("view engine", "pug");
+app.set("views", __dirname +"/src/views")
 
-app.listen(3000);
+const handleListen = () => console.log("http://localhost:3000");
+app.listen(3000, handleListen);
