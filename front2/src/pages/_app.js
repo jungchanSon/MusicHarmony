@@ -1,15 +1,16 @@
-import '../../styles/globals'
-import {Themeprovider} from "styled-component"
-import GlobalStyle from "../../styles/globals";
+import '../../styles/globalStyles'
+import {ThemeProvider} from "styled-components"
+import GlobalStyle from "../../styles/globalStyles";
 import tempTheme from "../../styles/Themes/theme";
-
+import { Head } from "next/document"
 
 function MyApp({ Component, pageProps }) {
   return (
-      <Themeprovider theme={tempTheme}>
-        <GlobalStyle/>
-        <Component {...pageProps} />
-      </Themeprovider>
+          <ThemeProvider theme={tempTheme}>
+            <GlobalStyle/>
+              <script src="https://cdn.tailwindcss.com"></script>
+            <Component {...pageProps} />
+          </ThemeProvider>
   )
 }
 
