@@ -1,7 +1,7 @@
 // 임시 테마
 
 
-const palette = {
+export const palette = {
     black: "#000000",
     red: "#F00",
     blue: "#00F",

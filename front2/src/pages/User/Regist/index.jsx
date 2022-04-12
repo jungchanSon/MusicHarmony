@@ -7,7 +7,7 @@ import styled from "styled-components"
 const Regist = () => {
     return (
         <div>
-            <TTT className ="flex items-center">
+            <TTT className ="flex items-center grey">
                 <h1>Regist</h1>
                 <HeadRegist>aaa</HeadRegist>
                 <Test>ASDASD</Test>
@@ -20,8 +20,8 @@ const Regist = () => {
 };
 
 const Test = styled.div`
-  color: #0070f3;
-  background: #61dafb;
+  color: ${theme.blue};
+  background: ${theme.blue};
 `
 
 
@@ -30,11 +30,12 @@ const HeadRegist = tw.div`
     hover:underline
 `
 const TTT = tw.div`
+    blue
    flex
     items-center
     justify-center
     flex-col
     w-full
-    bg-indigo-600
+    bg-lime-900
 `
 export default Regist;
