@@ -27,6 +27,8 @@ let myStream;
 let muted = false;
 let cameraOff = false;
 let roomName;
+let myPeerConnection;
+let myDataChannel;
 
 async function getCameras() {
     try{
@@ -78,21 +80,39 @@ cameraBtn.addEventListener("click", handleCameraBtn);
 
 const welcomeForm = welcome.querySelector("form");
 
-startMedia = () => {
+
+initCall = async  () => {
     welcome.hidden = true;
     call.hidden = false;
-    getMedia();
+    await getMedia();
+    makeConnection();
 };
 
-const handleWelcomesubmit = (event) => {
+const handleWelcomesubmit = async (event) => {
     event.preventDefault();
     const input = welcomeForm.querySelector("input");
-    socket.emit("join_room", input.value, startMedia());
+    await initCall();
+    socket.emit("join_room", input.value);
+    roomName = input.value;
     input.value="";
 }
 
 welcomeForm.addEventListener("submit", handleWelcomesubmit)
 
-socket.on("welcome", () =>{
-    console.log("someone joined");
+socket.on("welcome", async () => {
+    const offer = await myPeerConnection.createOffer();
+    myPeerConnection.setLocalDescription(offer);
+    console.log("sent the offer");
+    socket.emit("offer", offer, roomName);
+});
+
+socket.on("offer", async (offer) => {
+    myPeerConnection.setRemoteDescription(offer);
+    console.log("recieve offer")
 })
+
+
+function makeConnection() {
+    myPeerConnection = new RTCPeerConnection();
+    myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
+}
