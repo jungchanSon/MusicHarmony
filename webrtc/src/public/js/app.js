@@ -149,7 +149,17 @@ socket.on("ice", ice => {
 })
 
 function makeConnection() {
-    myPeerConnection = new RTCPeerConnection();
+    myPeerConnection = new RTCPeerConnection({
+        iceServers: [
+            {
+                urls: [
+                    "stun:stun.l.google.com:19302",
+                ],
+            },
+        ],
+    });
+    console.log("myPeerConnection.iceServers")
+    console.log(myPeerConnection)
     myPeerConnection.addEventListener("icecandidate", handleIce);
     myPeerConnection.addEventListener("addstream", handleAddStream);
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
