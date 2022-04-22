@@ -1,3 +1,4 @@
+
 // const socket = new WebSocket(`ws://${window.location.host}`);
 // socket.addEventListener("open", ()=> {
 //     console.log("Connec");
@@ -99,20 +100,47 @@ const handleWelcomesubmit = async (event) => {
 
 welcomeForm.addEventListener("submit", handleWelcomesubmit)
 
+//clientA, 방에 이미 있던 사람
 socket.on("welcome", async () => {
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
     console.log("sent the offer");
     socket.emit("offer", offer, roomName);
 });
-
+//ClientB, 방에 새로 들어온 사람
 socket.on("offer", async (offer) => {
+    console.log("receive the offer");
     myPeerConnection.setRemoteDescription(offer);
-    console.log("recieve offer")
-})
+    const answer = await myPeerConnection.createAnswer();
+    myPeerConnection.setLocalDescription(answer);
+    socket.emit("answer", answer, roomName);
+    console.log("sent the answer");
+});
+//ClientA, Answer 수신 저장
+socket.on("answer", async (answer) => {
+    console.log("recieve the answer");
+    myPeerConnection.setRemoteDescription(answer);
+});
 
+socket.on("ice", ice => {
+    console.log("receive candidate");
+    myPeerConnection.addIceCandidate(ice);
+})
 
 function makeConnection() {
     myPeerConnection = new RTCPeerConnection();
+    myPeerConnection.addEventListener("icecandidate", handleIce);
+    myPeerConnection.addEventListener("addstream", handleAddStream);
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
+}
+
+const handleIce = (data) => {
+    console.log("sent candidate");
+    socket.emit("ice", data.candidate, roomName);
+}
+
+const handleAddStream = (data) => {
+    const peersSteam = document.getElementById("peersStream");
+    console.log("got an event from my peer");
+    peersSteam.srcObject = data.stream
 }

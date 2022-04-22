@@ -20,6 +20,6 @@ html(lang="en")
                     button#camera Turn carema off
                     select#cameras
                         option(value="device") Face Camera
-
+                video#peersStream(autoplay, playsinline, width=400, height=400)
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
