@@ -44,16 +44,25 @@ async function getCameras() {
     }catch (e) {console.log(e)}
 }
 
-async function getMedia() {
+async function getMedia(deviceId) {
+    const initialConstrains = {
+        audio: true,
+        video: { facingMode: "user" },
+    };
+    const cameraConstraints = {
+        audio: true,
+        video: { deviceId: { exact: deviceId } },
+    };
     try {
-        myStream = await navigator.mediaDevices.getUserMedia({
-            audio:true,
-            video:true,
-        });
+        myStream = await navigator.mediaDevices.getUserMedia(
+            deviceId ? cameraConstraints : initialConstrains
+        );
         myFace.srcObject = myStream;
-        await getCameras();
-    } catch(e) {
-        console.log(e)
+        if (!deviceId) {
+            await getCameras();
+        }
+    } catch (e) {
+        console.log(e);
     }
 }
 
@@ -76,8 +85,20 @@ const handleCameraBtn = () => {
     }
 }
 
+handleCameraChange = async () => {
+    await getMedia(camerasSelect.value);
+    if(myPeerConnection){
+        const videoTrack = myStream.getVideoTracks()[0]
+        const videoSender = myPeerConnection.getSenders().find(sender => sender.track.kind === "video");
+        videoSender.replaceTrack(videoTrack);
+    }
+
+}
+
+
 muteBtn.addEventListener("click", handleMuteBtn);
 cameraBtn.addEventListener("click", handleCameraBtn);
+camerasSelect.addEventListener("input", handleCameraChange);
 
 const welcomeForm = welcome.querySelector("form");
 
