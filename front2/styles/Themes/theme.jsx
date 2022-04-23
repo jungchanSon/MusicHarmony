@@ -1,16 +1,27 @@
 // 임시 테마
 
 
-export const palette = {
-    black: "#000000",
-    red: "#F00",
-    blue: "#00F",
-    green: "#0F0",
-    white: "#FFF"
+export const layoutColors = {
+    main: "#CA96E0",
+    sub: "#B593ED",
+
 };
 
+export const fontColors = {
+    main: "black",
+    sub: "grey",
+};
+
+export const buttonColors = {
+    main: "red",
+    sub: "green",
+};
+
+
 const tempTheme ={
-    ...palette,
+    layoutColors,
+    fontColors,
+    buttonColors,
 }
 
 
