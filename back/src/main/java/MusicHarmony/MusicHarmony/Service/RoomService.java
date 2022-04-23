@@ -14,8 +14,9 @@ public class RoomService {
 
     private final RoomRepoImpl roomRepo;
 
-    public void createRoom(String name){
-        roomRepo.createRoom(name);
+    public Room createRoom(String name){
+        Room room = roomRepo.createRoom(name);
+        return room;
     }
 
     public List<Room> getRooms() {

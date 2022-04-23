@@ -1,33 +1,46 @@
-import React from 'react';
+import React, {useState} from 'react';
+import styled from "styled-components";
 import connnect from '/src/pages/api/socketConnect'
-import create from 'zustand';
+import {createRoom} from '../api/roomAPI'
+
 
 const MakeRoom = () => {
-    const tempstate = create((set) => ({
-        temp : 'temp',
-        updatetemp(data) {
-            set((state) => ({ temp: data}))
-        }
-    }))
+    const [title, setTitle] = useState("");
 
-    var stompClient = null;
-    connnect(stompClient);
-
+    // var stompClient = null;
+    // connnect(stompClient);
     // stompClient.send()
-    axios.post('http://localhost:8080/roomCreate', {
-        roomName : 'name',
-    });
 
-    var response = axios.get('http://localhost:8080/getRooms')
-
+    const createSubmit = (e) => {
+        e.preventDefault();
+        console.log(title);
+        createRoom(title);
+        setTitle("")
+    }
     return (
         <div>
+            <h1 className={"text-4xl"} >방 개설하기 </h1>
+            <div>원하는 방 이름을 적어주세요</div>
+            <RoomForm>
+                <FormInput
+                    type="text"
+                    value={title}
+                    placeholder={"방 개설하기"}
+                    onChange={e => {setTitle(e.target.value)}}
+                />
+                <FormButon onClick={createSubmit} className={"bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"}>개설하기</FormButon>
+            </RoomForm>
 
-            <h1>ListRooms </h1>
-
-            <button onClick={updatetemp(response)}></button>
+            {/*<button onClick={updatetemp(response)}></button>*/}
         </div>
     );
 };
+
+const RoomForm = styled.form`
+`
+const FormInput =styled.input`
+
+`
+const FormButon = styled.button``
 
 export default MakeRoom;

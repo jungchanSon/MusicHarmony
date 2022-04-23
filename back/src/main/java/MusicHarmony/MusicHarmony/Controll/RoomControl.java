@@ -6,13 +6,12 @@ import MusicHarmony.MusicHarmony.VO.Room;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+@CrossOrigin("*")
 @Controller
 @RequiredArgsConstructor
 public class RoomControl {
@@ -22,11 +21,11 @@ public class RoomControl {
     String local= "localhost";
     String server = "";
 
-    @PostMapping("/roomCreate")
+    @PostMapping("/createRoom")
     @ResponseBody
     public void createRoom(@RequestParam String name) {
-        System.out.println("createRoom");
-        roomService.createRoom(name);
+        System.out.println(name);
+        roomRepo.createRoom(name);
     }
 
     @GetMapping("/getRooms")
@@ -35,4 +34,10 @@ public class RoomControl {
         return roomService.getRooms();
     }
 
+//    @PostMapping("/create")
+//    @ResponseBody
+//    public Room createRoom(@RequestBody Map<String,String> name) {
+//        System.out.println(name.get("name"));
+//        return roomService.createRoom(name.get("name"));
+//    }
 }

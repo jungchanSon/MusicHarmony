@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }) {
 
               <Header />
             {/*<GlobalStyle/>*/}
-            <ComponentContainer>
+            <ComponentContainer className = {"px-10"}>
                 <Component {...pageProps} />
             </ComponentContainer>
               <Footer/>

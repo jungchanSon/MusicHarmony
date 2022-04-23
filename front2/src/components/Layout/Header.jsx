@@ -8,7 +8,6 @@ const Header = () => {
         <>
                 <HeaderBox className={"pt-4"}>
                     <h1 className={"text-5xl"} >Music Harmony</h1>
-                    <h1></h1>
                     <Nav/>
                 </HeaderBox>
         </>
@@ -26,7 +25,6 @@ const HeaderBox = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 20vh;
   background: ${props => props.theme.layoutColors.nav};
 
     font-family: 'Gamja Flower', cursive;
