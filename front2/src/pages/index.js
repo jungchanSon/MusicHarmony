@@ -2,6 +2,7 @@ import React from 'react';
 import tempStore from "../store/testStore";
 import Stomp from 'stompjs';
 import Sockjs from 'sockjs-client'
+import axios from 'axios'
 
 const MainPage = () => {
     const {count, up} =tempStore();

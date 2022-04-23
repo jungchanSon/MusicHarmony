@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class RoomControl {
@@ -25,6 +27,12 @@ public class RoomControl {
     public void createRoom(@RequestParam String name) {
         System.out.println("createRoom");
         roomService.createRoom(name);
+    }
+
+    @GetMapping("/getRooms")
+    @ResponseBody
+    public List<Room> getRooms(){
+        return roomService.getRooms();
     }
 
 }
