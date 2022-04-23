@@ -30,4 +30,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
 /.idea
+>>>>>>> e1dc3f93fd59e9b811443c2410ab78be02974474
