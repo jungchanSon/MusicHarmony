@@ -1,5 +1,5 @@
 import '../../styles/globalStyles'
-import {ThemeProvider} from "styled-components"
+import styled, {ThemeProvider} from "styled-components"
 import GlobalStyle from "../../styles/globalStyles";
 import tempTheme from "../../styles/Themes/theme";
 import { Head } from "next/document"
@@ -13,21 +13,23 @@ function MyApp({ Component, pageProps }) {
           <ThemeProvider theme={tempTheme}>
               <header>
                   <script src="https://cdn.tailwindcss.com"></script>
-              </header>
-              <Header>
                   <link rel="preconnect" href="https://fonts.googleapis.com"/>
                   <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
                   <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"/>
-              </Header>
+              </header>
 
-
+              <Header />
             {/*<GlobalStyle/>*/}
-            <Component {...pageProps} />
-
-
+            <ComponentContainer>
+                <Component {...pageProps} />
+            </ComponentContainer>
               <Footer/>
           </ThemeProvider>
   )
 }
 
+const ComponentContainer = styled.div`
+    background: ${(props) => props.theme.layoutColors.main};
+
+`
 export default MyApp
