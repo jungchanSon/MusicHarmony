@@ -19,8 +19,8 @@ function MyApp({ Component, pageProps }) {
               </header>
 
               <Header />
-            {/*<GlobalStyle/>*/}
-            <ComponentContainer className = {"px-10"}>
+            <GlobalStyle/>
+            <ComponentContainer className = {"px-10 py-20"}>
                 <Component {...pageProps} />
             </ComponentContainer>
               <Footer/>

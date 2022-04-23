@@ -21,7 +21,10 @@ const GlobalStyle = createGlobalStyle`
   {  
 
   }
-  
+  h1 {
+    font-size: 3em;
+    font-weight: bold;
+  }
 `
 
 export default GlobalStyle
