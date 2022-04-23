@@ -1,12 +1,39 @@
 import React from 'react';
-import Header from "../components/Layout/Header";
-import Nav from "../components/Layout/Nav";
-import Main from "../../styles/Layout/main";
-import Footer from "../components/Layout/Footer";
+import tempStore from "../store/testStore";
+import Stomp from 'stompjs';
+import Sockjs from 'sockjs-client'
 
 const MainPage = () => {
+    const {count, up} =tempStore();
+
+    // 소켓
+    var stompClient = null;
+    const connnect = () => {
+        var socket = new Sockjs('http://localhost:8080/music-harmony');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/toto', function (data) {
+                console.log(data);
+            });
+        });
+    }
+
+    const testButton = () => {
+        stompClient.send("/app/hello",{}, "from client");
+    }
+
     return (
         <>
+            <button onClick={connnect}>connect test</button>
+            <button onClick={testButton}>testSendButton</button>
+
+            <br/><br/><br/><br/><br/><br/><br/><br/>
+
+            <p>{count}{count}{count}{count}{count}</p>
+            <button onClick={up}>esttest</button>
+
+
                 1. 프로젝트 추진배경
                 <br/><br/>
                 (1) 세계적으로 코로나 팬데믹 상황이 벌어짐으로 인해 많은 협업 방식이 온라인으로 전환될 수밖에 없었습니다. 그중 밴드부터 오케스트라까지 다양한 음악 산업 또한 어려움을 겪게 되었고, 이를 5G 환경과 엣지 컴퓨팅 기술을 적용하여 초저지연과 고도의 컴퓨팅 자원 활용이 가능한 실시간 원격 작업 방식을 통해 해결할 수 있을 것이라고 생각했습니다.
