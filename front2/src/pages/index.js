@@ -7,11 +7,7 @@ import Footer from "../components/Layout/Footer";
 const MainPage = () => {
     return (
         <>
-            <Header>
-                <link rel="preconnect" href="https://fonts.googleapis.com"/>
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
-                <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"/>
-            </Header>
+
             <Main>
                 1. 프로젝트 추진배경
                 <br/><br/>
@@ -79,7 +75,7 @@ const MainPage = () => {
                 고품질의 음악 협업을 위해 초고속 및 고도의 컴퓨팅/스토리지/네트워킹 자원 활용이 가능한 5g mec(mobile edge computing) 기술 및 aws cloud 등을 이용하여 실시간 영상통화 및 음악 오디오 녹화와 송출을 할 수 있는 웹앱+오디오박스 형태의 서비스를 개발합니다.
                 <br/><br/>
             </Main>
-            <Footer></Footer>
+
         </>
     );
 };
