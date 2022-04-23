@@ -9,4 +9,5 @@ public interface RoomRepo {
     List<Room> fineAllRoom();
     Room findRoom(String id);
     Room createRoom(String name);
+    void removeRoom(String id);
 }

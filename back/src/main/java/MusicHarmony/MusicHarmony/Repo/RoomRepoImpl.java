@@ -12,7 +12,6 @@ import java.util.Map;
 public class RoomRepoImpl implements RoomRepo{
     private static Map<String, Room> roomRepo = new LinkedHashMap<>();
 
-
     @Override
     public List<Room> fineAllRoom() {
         List roomList = new ArrayList(roomRepo.values());
@@ -32,4 +31,11 @@ public class RoomRepoImpl implements RoomRepo{
         roomRepo.put(room.getRoomID(), room);
         return room;
     }
+
+    @Override
+    public void removeRoom(String id) {
+        roomRepo.remove(id);
+    }
+
+
 }
