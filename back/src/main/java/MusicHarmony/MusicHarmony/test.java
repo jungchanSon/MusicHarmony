@@ -11,4 +11,5 @@ public class test {
     public String greeting() throws Exception{
         Thread.sleep(500);
         return "SpringServer send~~~";
-    }}
+    }
+}

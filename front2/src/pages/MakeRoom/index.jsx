@@ -5,6 +5,7 @@ const MakeRoom = () => {
     var stompClient = null;
     connnect(stompClient);
 
+    stompClient.send()
 
     return (
         <div>
