@@ -9,6 +9,7 @@ function MyApp({ Component, pageProps }) {
           <ThemeProvider theme={tempTheme}>
             <GlobalStyle/>
               <script src="https://cdn.tailwindcss.com"></script>
+
             <Component {...pageProps} />
           </ThemeProvider>
   )
