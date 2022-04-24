@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }) {
           <ThemeProvider theme={tempTheme}>
               <header>
                   {/*<link rel="preconnect" href="https://cdn.tailwindcss.com"/>*/}
-                  <script src="https://cdn.tailwindcss.com" />
+                  <link src="https://cdn.tailwindcss.com" />
                   <link rel="preconnect" href="https://fonts.googleapis.com"/>
                   <link rel="preconnect" href="https://fonts.gstatic.com"/>
                   <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"/>

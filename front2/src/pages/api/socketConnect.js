@@ -11,5 +11,6 @@ const connnect = (stompClient) => {
             console.log(data);
         });
     });
+    console.log("Connnnect")
 }
 export default connnect;

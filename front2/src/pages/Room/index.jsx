@@ -1,10 +1,39 @@
 import React from 'react';
 import styled from "styled-components";
-import connnect from "../api/socketConnect";
+import Sockjs from "sockjs-client";
+import Stomp from "stompjs";
 const Room = () => {
-    //서버 소켓 연결.
-    connnect();
+    var roomID = null;
+    var userName = null;
 
+    if (typeof window !== 'undefined') {
+        roomID=localStorage.getItem("roomID");
+        userName=localStorage.getItem("userName");
+    }
+
+    const connnect =  (stompClient) => {
+        console.log(roomID);
+
+        var socket = new Sockjs('http://localhost:8080/music-harmony');
+        stompClient = Stomp.over(socket);
+        stompClient.connect(
+            {},
+            frame => {
+                console.log('Connecteddddddddd: ' + frame);
+                stompClient.subscribe('/sub/musicRoom/'+roomID, message => {
+                    console.log("메시지 답음 ", message.body);
+                });
+                stompClient.send('/pub/musicRoom',{}, JSON.stringify({roomID:roomID, userName:userName, message:"NewUser"}));
+            },
+            error => {
+                console.log('error', error);
+            }
+        );
+    }
+
+    const test = async () =>{
+    }
+    connnect();
     return (
         <div>
             <h1>Room</h1>

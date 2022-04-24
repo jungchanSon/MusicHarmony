@@ -23,8 +23,8 @@ const Room = () => {
             <h1 className={"mb-10"}> 이름을 먼저 적어주세요 </h1>
             <UserNameForm />
             <h1 className={"mt-10"}>방 목록</h1>
-            {arrayRoomList.map( item => (
-                <li className={"m-4"} id={item.roomID} onClick={enterRoomClick}>
+            {arrayRoomList.map( (item, key) => (
+                <li key={key} className={"m-4"} id={item.roomID} onClick={enterRoomClick}>
                     {item.name}
                 </li>
             ))}
