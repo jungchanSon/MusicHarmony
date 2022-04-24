@@ -9,10 +9,23 @@ const createRoomURL = LocalURL +'/createRoom';
 
 //GET은 여기부터
 const getRoomListURL = LocalURL +'/getRooms';
+const getRoomEnterURL = LocalURL +'/enterRoom/'
 
+//방 입장
+//TODO : 서버 리다이렉트로 고쳐보기
+const RoomEnter = (roomID) => {
+    axios.get(getRoomEnterURL+roomID).then(e =>{
+        if(e.data == "Ok") {
+            location.href = "http://localhost:3000/Room";
+            console.log(localStorage.get("userName"));
+        } else {
+            console.log("Room Enter Error");
+        }
+    })
+}
 
 //방개설 API
-const createRoom = (roomName) => {
+const CreateRoom = (roomName) => {
     var param = new URLSearchParams();
     param.append("name", roomName);
     axios.post(createRoomURL, param);
@@ -20,7 +33,8 @@ const createRoom = (roomName) => {
 
 //방목록가져오기 API
 //나중에 고치기
-const getRooms = () => {
+//TODO : 서버에 있는 모든 방목록 불러옴 => 일정 분량만큼 가져오는 식으로 바꾸기
+const GetRooms = () => {
     const {update} = RoomStore();
     useEffect(() => {
         axios.get(getRoomListURL).then((e) => {
@@ -30,4 +44,4 @@ const getRooms = () => {
     }, []);
 }
 
-export {createRoom, getRooms};
+export {CreateRoom, GetRooms, RoomEnter};

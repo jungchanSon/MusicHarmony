@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styled from "styled-components";
 import connnect from '/src/pages/api/socketConnect'
-import {createRoom} from '../api/roomAPI'
+import {CreateRoom} from '../api/roomAPI'
 
 
 const MakeRoom = () => {
@@ -14,7 +14,7 @@ const MakeRoom = () => {
     const createSubmit = (e) => {
         e.preventDefault();
         console.log(title);
-        createRoom(title);
+        CreateRoom(title);
         setTitle("")
     }
     return (
