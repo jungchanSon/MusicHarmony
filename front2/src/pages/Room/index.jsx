@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import Sockjs from "sockjs-client";
 import Stomp from "stompjs";
 const Room = () => {
     var roomID = null;
     var userName = null;
+    var [cameraOption, setCameraOption] = useState([]);
 
     if (typeof window !== 'undefined') {
         roomID=localStorage.getItem("roomID");
@@ -31,14 +32,41 @@ const Room = () => {
         );
     }
 
-    const test = async () =>{
+    const getCameras = async () => {
+        try{
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            console.log(devices)
+            const cameras = devices.filter(device => device.kind === "videoinput");
+            console.log("camera >>>" , cameras[0].deviceId)
+            cameras.forEach(camera => {
+                setCameraOption([[camera.deviceId, camera.label]])
+                console.log("camera >>>>>>", camera.deviceId)
+            })
+        }catch (e) {console.log(e)}
     }
+
+
+
+    useEffect(() => {
+        getCameras();
+    }, [])
     connnect();
+
+
+
     return (
         <div>
             <h1>Room</h1>
             <video></video>
             <video></video>
+            <select name="" id="cameras">
+                {
+                    cameraOption.map( (item, key) => (
+                        <option value={item[0]}>{item[1]}</option>
+                    ))
+                }
+            </select>
+            <div>{cameraOption[0]}</div>
         </div>
     );
 };
