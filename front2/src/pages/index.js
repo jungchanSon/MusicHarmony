@@ -26,13 +26,13 @@ const MainPage = () => {
 
     return (
         <>
-            <button onClick={connnect}>connect test</button>
-            <button onClick={testButton}>testSendButton</button>
+            {/*<button onClick={connnect}>connect test</button>*/}
+            {/*<button onClick={testButton}>testSendButton</button>*/}
 
             <br/><br/><br/><br/><br/><br/><br/><br/>
 
             <p>{count}{count}{count}{count}{count}</p>
-            <button onClick={up}>esttest</button>
+            {/*<button onClick={up}>esttest</button>*/}
 
 
                 1. 프로젝트 추진배경

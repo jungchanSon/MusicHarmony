@@ -1,6 +1,6 @@
 import create from 'zustand'
 
-const RoomStore = create(set => ({
+const UserStore = create(set => ({
     userName: "",
     mute: false,
     camera: false,
@@ -10,4 +10,4 @@ const RoomStore = create(set => ({
     switchCamera: () => set( (e) => ({camera: !e.camera }))
 }));
 
-export {RoomStore};
+export {UserStore};

@@ -19,7 +19,6 @@ const Footer = () => {
         </>
     );
 }
-
 const FootContainer = styled.div`
   background: ${props => props.theme.layoutColors.sub};
   height: 100%;
