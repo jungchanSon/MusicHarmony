@@ -7,20 +7,17 @@ import UserVideo from "../../components/Room/UserVideo";
 import {MediaStreamStore} from "../../store/MediaStreamStore";
 import Buttons from "../../components/Room/Buttons";
 import CameraOptions from "../../components/Room/CameraOptions";
+import {string} from "sockjs-client/lib/utils/random";
 const Room = () => {
-    const{userStream, setUserStream} =MediaStreamStore();
+    const{userStream, setUserStream, setMyPeerConnection} =MediaStreamStore();
+    let stompClient;
 
-
-    const videoStreamRef = useRef();
-    const [stream, setStream] = useState()
-    const {camera, mute, switchCamera, switchMute} = UserStore();
-    const optionRef = useRef();
     let myStream;
-
-    var CameraOptionArray = [];
     var roomID = null;
     var userName = null;
-    var [cameraOption, setCameraOption] = useState();
+
+
+    let myPeerConnection;
 
     if (typeof window !== 'undefined') {
         roomID=localStorage.getItem("roomID");
@@ -29,17 +26,33 @@ const Room = () => {
 
     const connnect =  (stompClient) => {
         console.log(roomID);
-
         var socket = new Sockjs('http://localhost:8080/music-harmony');
         stompClient = Stomp.over(socket);
         stompClient.connect(
             {},
             frame => {
-                console.log('Connecteddddddddd: ' + frame);
-                stompClient.subscribe('/sub/musicRoom/'+roomID, message => {
-                    console.log("메시지 답음 ", message.body);
+                stompClient.subscribe('/sub/musicRoom/'+roomID, (msg) => {
+                    var message = JSON.parse(msg.body)
+
+                    if(message.type === "ENTER" && message.userName !== userName) {
+                        const offer = myPeerConnection.createOffer().then(offer => {
+                            myPeerConnection.setLocalDescription(offer);
+                            stompClient.send('/pub/musicRoom/offer', {},JSON.stringify({roomID:roomID, userName:userName, description:offer, type:"OFFER"}));
+                            console.log("Promise.toString(offer)", myPeerConnection);
+                        });
+                    }
+                    else if(message.type === "OFFER" && message.userName !== userName){
+                        console.log("offer >>>>", message.description);
+                        // myPeerConnection.setRemoteDescription(message.description);
+
+                        const answer = myPeerConnection.createAnswer().then(answer => {
+                            myPeerConnection.setLocalDescription(answer)
+                            console.log("mymyPer",myPeerConnection);
+                        })
+                    }
                 });
-                stompClient.send('/pub/musicRoom',{}, JSON.stringify({roomID:roomID, userName:userName, message:"NewUser"}));
+                stompClient.send('/pub/musicRoom/enter',{}, JSON.stringify({roomID:roomID, userName:userName, message:"enter", type:"ENTER"}));
+
             },
             error => {
                 console.log('error', error);
@@ -50,15 +63,11 @@ const Room = () => {
     const getCameras = async () => {
         try{
             const devices = await navigator.mediaDevices.enumerateDevices();
-            console.log(devices)
             const cameras = devices.filter(device => device.kind === "videoinput");
-            console.log("camera >>>" , cameras[0].deviceId)
+
             cameras.forEach(camera => {
                 // setCameraOption([...cameraOption, [camera.deviceId, camera.label]])
-                console.log("useuse");
-                CameraOptionArray.push([camera.deviceId, camera.label])
-
-                console.log("camera >>>>>>", camera.deviceId)
+                // CameraOptionArray.push([camera.deviceId, camera.label])
             })
 
         }catch (e) {console.log(e)}
@@ -84,56 +93,61 @@ const Room = () => {
             console.log(e);
         }
     };
-    useEffect(() =>{
-        getMedia();
-    }, [])
 
-
-    // const handleCameraBtn = () => {
-    //     myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
-    // }
+//webRTC 사이클
+    const makeConnection = () => {
+        myPeerConnection = new RTCPeerConnection({
+            iceServers: [
+                {
+                    urls: [
+                        "stun:stun.l.google.com:19302",
+                    ],
+                },
+            ],
+        });
+        // myPeerConnection.addEventListener("icecandidate", handleIce);
+        // myPeerConnection.addEventListener("addstream", handleAddStream);
+        myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
+        console.log("makeCon", myPeerConnection);
+        return myPeerConnection;
+    }
     //
-    // const handleMuteBtn = () => {
-    //     console.log("asdf")
-    //     myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
-    //     console.log(CameraOptionArray);
+    // const setMyPeerLocalDesc = () => {
+    //     const offer = myPeerConnection.createOffer();
+    //     myPeerConnection.setLocalDescription(offer);
     // }
 
-    useEffect(() => {
-        console.log(myStream)
+    const init = async () => {
+        await getMedia();
+        makeConnection();
+        console.log("initMy", myPeerConnection);
+        // setMyPeerLocalDesc();
+    }
+
+    useEffect(() =>{
+        init().then( () => {
+            connnect(stompClient);
+        });
+        // myPeerConnection = new RTCPeerConnection();
     }, [])
 
-    connnect();
-
+    const test = () => {
+        const my = new RTCPeerConnection();
+        // const offer = myPeerConnection.createOffer();
+        console.log(myPeerConnection);
+    }
 
     return (
         <div>
             <h1>Room</h1>
-
             <UserVideo autoPlay></UserVideo>
-
-            {/*<select name="" id="cameras">*/}
-            {/*    <option ref={optionRef}></option>*/}
-            {/*    {*/}
-            {/*        cameraOption.map( (item, key) => (*/}
-            {/*            <option key={key} value={item[0]}>{item[1]}</option>*/}
-            {/*        ))*/}
-            {/*    }*/}
-            {/*</select>*/}
-            {/*<div>{cameraOption[0]}</div>*/}
-
             <CameraOptions></CameraOptions>
-
             <div>
                 <Buttons></Buttons>
             </div>
+            <button onClick={test}>asdfasdf</button>
         </div>
     );
 };
-
-const Video = styled.video`
-  width: 100px;
-  height: 100px;
-`
 
 export default Room;

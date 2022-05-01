@@ -114,6 +114,7 @@ const handleWelcomesubmit = async (event) => {
     const input = welcomeForm.querySelector("input");
     await initCall();
     socket.emit("join_room", input.value);
+    console.log("joinRoom")
     roomName = input.value;
     input.value="";
 }
@@ -124,7 +125,7 @@ welcomeForm.addEventListener("submit", handleWelcomesubmit)
 socket.on("welcome", async () => {
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
-    console.log("sent the offer");
+    console.log("offer >>> ", offer)
     socket.emit("offer", offer, roomName);
 });
 //ClientB, 방에 새로 들어온 사람
@@ -135,6 +136,7 @@ socket.on("offer", async (offer) => {
     myPeerConnection.setLocalDescription(answer);
     socket.emit("answer", answer, roomName);
     console.log("sent the answer");
+
 });
 //ClientA, Answer 수신 저장
 socket.on("answer", async (answer) => {
@@ -174,3 +176,35 @@ const handleAddStream = (data) => {
     console.log("got an event from my peer");
     peersSteam.srcObject = data.stream
 }
+
+function timer(time){
+    return new Promise(function (resolve, reject){
+        setTimeout(function(){
+            resolve(time);
+        }, time)
+    })
+}
+
+async function run() {
+        console.log(1);
+        console.log('start');
+    console.log(2);
+        var time = await timer(1000);
+    console.log(3);
+        console.log('time' +time);
+    console.log(4);
+        time = timer(time+1000);
+    console.log(5);
+        console.log('time:'+ time);
+    console.log(6);
+        time = timer(time+1000);
+    console.log(7);
+        console.log('time;'+ time);
+    console.log(8);
+        console.log('end')
+    console.log(9);
+}
+console.log("before");
+
+run();
+console.log("after");

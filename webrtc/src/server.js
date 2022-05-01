@@ -11,14 +11,17 @@ app.set("views", __dirname +"/views")
 app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/"))
-
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer)
 
 wsServer.on("connection", socket => {
     socket.on("join_room", roomName => {
-       socket.join(roomName);
+        socket.join(roomName);
+        console.log("timeout");
         socket.to(roomName).emit("welcome");
+        console.log("welcome123");
+
+
     });
     socket.on("offer", (offer, roomName) => {
         socket.to(roomName).emit("offer", offer);
