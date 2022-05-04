@@ -8,9 +8,11 @@ import {MediaStreamStore} from "../../store/MediaStreamStore";
 import Buttons from "../../components/Room/Buttons";
 import CameraOptions from "../../components/Room/CameraOptions";
 import {string} from "sockjs-client/lib/utils/random";
+import io from 'socket.io'
+
 const Room = () => {
+    const socket = io("localhost:8000");
     const{userStream, setUserStream, setMyPeerConnection} =MediaStreamStore();
-    let stompClient;
 
     let myStream;
     var roomID = null;
@@ -24,41 +26,41 @@ const Room = () => {
         userName=localStorage.getItem("userName");
     }
 
-    const connnect =  (stompClient) => {
-        console.log(roomID);
-        var socket = new Sockjs('http://localhost:8080/music-harmony');
-        stompClient = Stomp.over(socket);
-        stompClient.connect(
-            {},
-            frame => {
-                stompClient.subscribe('/sub/musicRoom/'+roomID, (msg) => {
-                    var message = JSON.parse(msg.body)
-
-                    if(message.type === "ENTER" && message.userName !== userName) {
-                        const offer = myPeerConnection.createOffer().then(offer => {
-                            myPeerConnection.setLocalDescription(offer);
-                            stompClient.send('/pub/musicRoom/offer', {},JSON.stringify({roomID:roomID, userName:userName, description:offer, type:"OFFER"}));
-                            console.log("Promise.toString(offer)", myPeerConnection);
-                        });
-                    }
-                    else if(message.type === "OFFER" && message.userName !== userName){
-                        console.log("offer >>>>", message.description);
-                        // myPeerConnection.setRemoteDescription(message.description);
-
-                        const answer = myPeerConnection.createAnswer().then(answer => {
-                            myPeerConnection.setLocalDescription(answer)
-                            console.log("mymyPer",myPeerConnection);
-                        })
-                    }
-                });
-                stompClient.send('/pub/musicRoom/enter',{}, JSON.stringify({roomID:roomID, userName:userName, message:"enter", type:"ENTER"}));
-
-            },
-            error => {
-                console.log('error', error);
-            }
-        );
-    }
+    // const connnect =  (stompClient) => {
+    //     console.log(roomID);
+    //     var socket = new Sockjs('http://localhost:8080/music-harmony');
+    //     stompClient = Stomp.over(socket);
+    //     stompClient.connect(
+    //         {},
+    //         frame => {
+    //             stompClient.subscribe('/sub/musicRoom/'+roomID, (msg) => {
+    //                 var message = JSON.parse(msg.body)
+    //
+    //                 if(message.type === "ENTER" && message.userName !== userName) {
+    //                     const offer = myPeerConnection.createOffer().then(offer => {
+    //                         myPeerConnection.setLocalDescription(offer);
+    //                         stompClient.send('/pub/musicRoom/offer', {},JSON.stringify({roomID:roomID, userName:userName, description:offer, type:"OFFER"}));
+    //                         console.log("Promise.toString(offer)", myPeerConnection);
+    //                     });
+    //                 }
+    //                 else if(message.type === "OFFER" && message.userName !== userName){
+    //                     console.log("offer >>>>", message.description);
+    //                     // myPeerConnection.setRemoteDescription(message.description);
+    //
+    //                     const answer = myPeerConnection.createAnswer().then(answer => {
+    //                         myPeerConnection.setLocalDescription(answer)
+    //                         console.log("mymyPer",myPeerConnection);
+    //                     })
+    //                 }
+    //             });
+    //             stompClient.send('/pub/musicRoom/enter',{}, JSON.stringify({roomID:roomID, userName:userName, message:"enter", type:"ENTER"}));
+    //
+    //         },
+    //         error => {
+    //             console.log('error', error);
+    //         }
+    //     );
+    // }
 
     const getCameras = async () => {
         try{
@@ -132,10 +134,15 @@ const Room = () => {
     }, [])
 
     const test = () => {
-        const my = new RTCPeerConnection();
-        // const offer = myPeerConnection.createOffer();
-        console.log(myPeerConnection);
+        socket.emit("offer")
     }
+
+    socket.on("welcome", async () => {
+
+        const offer = await myPeerConnection.createOffer();
+        myPeerConnection.setLocalDescription(offer);
+        socket.emit("offer", offer);
+    });
 
     return (
         <div>
