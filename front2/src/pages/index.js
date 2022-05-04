@@ -4,12 +4,6 @@ import io from "socket.io-client";
 let socket
 
 const MainPage = () => {
-    useState(() => {
-        socket = io("http://localhost:8000/")
-        socket.emit('offer', "hello", error => {
-            console.log(error);
-        })
-    }, []);
 
     const test = (e ) => {
         e.preventDefault();

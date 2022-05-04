@@ -14,6 +14,7 @@ const Room = () => {
     //방들어가기 클릭
     const enterRoomClick= (e) => {
         localStorage.setItem("roomID", e.target.id)
+        localStorage.setItem("roomName", e.target.value)
         console.log(localStorage.getItem("userName"));
         RoomEnter(e.target.id);
         console.log("room enter >> ", e.target.id);

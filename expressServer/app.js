@@ -42,10 +42,22 @@ const io = socketio(server,{
 app.use(cors())
 app.use(router)
 io.on('connection', (socket) => {
-    console.log('새로운 connectoin이 발생하였습니다.')
-    socket.on('offer', (data) => console.log(data))
-    socket.on('disconnect', () => {
-        console.log('유저가 떠났어요.')
-    })
+    socket.on("join", (roomID, userName)=> {
+        socket.join(roomID);
+        socket.to(roomID).emit("welcome", userName);
+        console.log("welcome, ");
+    });
+    socket.on("offer", (offer, roomId ) => {
+        socket.to(roomId).emit("offer", offer);
+        console.log("woffer, ");
+    });
+    socket.on("answer", (answer, roomId) => {
+        socket.to(roomId).emit("answer", answer);
+        console.log("answer, ");
+    });
+    socket.on("ice", (ice, roomId) => {
+        socket.to(roomId).emit("ice", ice);
+        console.log("ice");
+    });
 })
 server.listen(PORT, () => console.log(`서버가 ${PORT} 에서 시작되었어요`))

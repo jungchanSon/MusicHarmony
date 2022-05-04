@@ -9,13 +9,18 @@ import Buttons from "../../components/Room/Buttons";
 import CameraOptions from "../../components/Room/CameraOptions";
 import {string} from "sockjs-client/lib/utils/random";
 import io from 'socket.io-client'
-let socket
+import VideoBox from "../../components/Room/VideoBox";
 
+
+
+let socket;
+let myPeerConnection;
+let streamProps;
 const Room = () => {
-    useEffect(() => {
-        const socket = io("http://localhost:8000");
-        socket.emit("offer", "first offer");
-    }, [])
+    const rf = useRef();
+    const socket = io("http://localhost:8000");
+
+
     const{userStream, setUserStream, setMyPeerConnection} =MediaStreamStore();
 
     let myStream;
@@ -23,7 +28,6 @@ const Room = () => {
     var userName = null;
 
 
-    let myPeerConnection;
 
     if (typeof window !== 'undefined') {
         roomID=localStorage.getItem("roomID");
@@ -80,11 +84,11 @@ const Room = () => {
     }
     const getMedia = async (deviceId) =>  {
         const initialConstrains = {
-            audio : true,
+            audio : false,
             video : {facingMode: "user"}
         };
         const cameraConstraints = {
-            audio: true,
+            audio: false,
             video: {deviceId: {exact: deviceId}}
         };
         try{
@@ -94,6 +98,7 @@ const Room = () => {
             setUserStream(myStream);
             if (!deviceId) {
                 await getCameras();
+                console.log("zzzzzzzzzz")
             }
         } catch (e) {
             console.log(e);
@@ -101,6 +106,16 @@ const Room = () => {
     };
 
 //webRTC 사이클
+    const handleIce = (data) => {
+        console.log("sent candidate");
+        socket.emit("ice", data.candidate, roomID);
+    }
+
+    const handleAddStream = (data) => {
+        console.log("got an event from my peer");
+        rf.current.srcObject= data.stream
+    }
+
     const makeConnection = () => {
         myPeerConnection = new RTCPeerConnection({
             iceServers: [
@@ -111,10 +126,10 @@ const Room = () => {
                 },
             ],
         });
-        // myPeerConnection.addEventListener("icecandidate", handleIce);
-        // myPeerConnection.addEventListener("addstream", handleAddStream);
+        myPeerConnection.addEventListener("icecandidate", handleIce);
+        myPeerConnection.addEventListener("addstream", handleAddStream);
         myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
-        console.log("makeCon", myPeerConnection);
+        console.log("makeCon");
         return myPeerConnection;
     }
     //
@@ -126,33 +141,113 @@ const Room = () => {
     const init = async () => {
         await getMedia();
         makeConnection();
-        console.log("initMy", myPeerConnection);
+        console.log("initMy");
         // setMyPeerLocalDesc();
     }
 
     useEffect(() =>{
-        init().then( () => {
-            // connnect(stompClient);
+        // init().then( () => {
+        //     socket.emit("join", roomID, userName);
+        // });
+        getMedia().then((e) => {
+            makeConnection();
+            socket.emit("join", roomID, userName);
+            socket.on("welcome", async (uN) => {
+                console.log("welocom", uN, "___", userName);
+                const offer = await myPeerConnection.createOffer();
+                myPeerConnection.setLocalDescription(offer);
+                socket.emit("offer", offer, roomID);
+            });
+            socket.on("offer", async (offer) => {
+                console.log("offer");
+                myPeerConnection.setRemoteDescription(offer);
+                const answer = await myPeerConnection.createAnswer();
+                myPeerConnection.setLocalDescription(answer);
+                socket.emit("answer", answer,roomID);
+                console.log(myPeerConnection)
+            })
+            socket.on("answer", async (answer) => {
+                console.log("answer");
+                myPeerConnection.setRemoteDescription(answer);
+                console.log(myPeerConnection)
+            })
+            socket.on("ice", ice => {
+                console.log("receive ic");
+                myPeerConnection.addIceCandidate(ice);
+            })
+//             socket.on("welcome", async () => {
+//                 const offer = await myPeerConnection.createOffer();
+//                 myPeerConnection.setLocalDescription(offer);
+//                 console.log("offer >>> ", offer)
+//                 socket.emit("offer", offer, roomID);
+//             });
+// //ClientB, 방에 새로 들어온 사람
+//             socket.on("offer", async (offer) => {
+//                 console.log("receive the offer");
+//                 myPeerConnection.setRemoteDescription(offer);
+//                 const answer = await myPeerConnection.createAnswer();
+//                 myPeerConnection.setLocalDescription(answer);
+//                 socket.emit("answer", answer, roomID);
+//                 console.log("sent the answer");
+//
+//             });
+// //ClientA, Answer 수신 저장
+//             socket.on("answer", async (answer) => {
+//                 console.log("recieve the answer");
+//                 myPeerConnection.setRemoteDescription(answer);
+//             });
+//
+
+
+
         });
-        // myPeerConnection = new RTCPeerConnection();
+        console.log("qqqqqqqqqqqqqqqqqqqqqqqq");
+
     }, [])
 
     const test = () => {
         socket.emit("offer")
     }
+        // socket.emit("join", roomID, userName);
+        // socket.on("welcome", async (uN) => {
+        //     console.log("welocom");
+        //     if(uN !== userName && myPeerConnection){
+        //         const offer = await myPeerConnection.createOffer();
+        //         myPeerConnection.setLocalDescription(offer);
+        //         socket.emit("offer", offer, roomID);
+        //     }
+        // });
+        //
+        // socket.on("offer", async (offer) => {
+        //     console.log("offer");
+        //     if(uN !== userName && myPeerConnection) {
+        //         const answer = await myPeerConnection.createAnswer();
+        //         myPeerConnection.setLocalDescription(answer);
+        //         myPeerConnection.setRemoteDescription(offer);
+        //         socket.emit("answer", answer);
+        //     }
+        // })
+        // socket.on("answer", async (answer) => {
+        //     if(uN !== userName && myPeerConnection) {
+        //         console.log("answer");
+        //         myPeerConnection.setRemoteDescription(answer);
+        //     }
+        // })
 
-    // socket.on("welcome", async () => {
+    // socket.on( , async () => {
     //
-    //     const offer = await myPeerConnection.createOffer();
-    //     myPeerConnection.setLocalDescription(offer);
-    //     socket.emit("offer", offer);
-    // });
+    // })
+    // socket.on( , async () => {
+    //
+    // })
 
     return (
         <div>
             <h1>Room</h1>
             <UserVideo autoPlay></UserVideo>
-            <CameraOptions></CameraOptions>
+            <VideoBox stream={streamProps}></VideoBox>
+            <CameraOptions ></CameraOptions>
+            <video ref={ rf} style={{width: "100px", height:"100px"}} autoPlay></video>
             <div>
                 <Buttons></Buttons>
             </div>
