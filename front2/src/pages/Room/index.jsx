@@ -8,10 +8,14 @@ import {MediaStreamStore} from "../../store/MediaStreamStore";
 import Buttons from "../../components/Room/Buttons";
 import CameraOptions from "../../components/Room/CameraOptions";
 import {string} from "sockjs-client/lib/utils/random";
-import io from 'socket.io'
+import io from 'socket.io-client'
+let socket
 
 const Room = () => {
-    const socket = io("localhost:8000");
+    useEffect(() => {
+        const socket = io("http://localhost:8000");
+        socket.emit("offer", "first offer");
+    }, [])
     const{userStream, setUserStream, setMyPeerConnection} =MediaStreamStore();
 
     let myStream;
@@ -128,7 +132,7 @@ const Room = () => {
 
     useEffect(() =>{
         init().then( () => {
-            connnect(stompClient);
+            // connnect(stompClient);
         });
         // myPeerConnection = new RTCPeerConnection();
     }, [])
@@ -137,12 +141,12 @@ const Room = () => {
         socket.emit("offer")
     }
 
-    socket.on("welcome", async () => {
-
-        const offer = await myPeerConnection.createOffer();
-        myPeerConnection.setLocalDescription(offer);
-        socket.emit("offer", offer);
-    });
+    // socket.on("welcome", async () => {
+    //
+    //     const offer = await myPeerConnection.createOffer();
+    //     myPeerConnection.setLocalDescription(offer);
+    //     socket.emit("offer", offer);
+    // });
 
     return (
         <div>

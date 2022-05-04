@@ -1,38 +1,27 @@
-import React from 'react';
-import tempStore from "../store/testStore";
-import Stomp from 'stompjs';
-import Sockjs from 'sockjs-client'
-import axios from 'axios'
+import React, {useState} from 'react';
+import io from "socket.io-client";
+
+let socket
 
 const MainPage = () => {
-    const {count, up} =tempStore();
+    useState(() => {
+        socket = io("http://localhost:8000/")
+        socket.emit('offer', "hello", error => {
+            console.log(error);
+        })
+    }, []);
 
-    // 소켓
-    var stompClient = null;
-    const connnect = () => {
-        var socket = new Sockjs('http://localhost:8080/music-harmony');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/toto', function (data) {
-                console.log(data);
-            });
-        });
+    const test = (e ) => {
+        e.preventDefault();
+        socket.emit('offer', "asdasdasdad");
     }
-
-    const testButton = () => {
-        stompClient.send("/app/hello",{}, "from client");
-    }
-
     return (
         <>
+            <button onClick={test}></button>
             {/*<button onClick={connnect}>connect test</button>*/}
             {/*<button onClick={testButton}>testSendButton</button>*/}
 
             <br/><br/><br/><br/><br/><br/><br/><br/>
-
-            <p>{count}{count}{count}{count}{count}</p>
-            {/*<button onClick={up}>esttest</button>*/}
 
 
                 1. 프로젝트 추진배경
