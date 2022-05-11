@@ -10,4 +10,9 @@ public interface RoomRepo {
     Room findRoom(String id);
     Room createRoom(String name);
     void removeRoom(String id);
+
+    List getRoomUsers(String roomId);
+
+    void addUser(String roomId, String userName);
+    void removeUser(String roomId, String userName);
 }

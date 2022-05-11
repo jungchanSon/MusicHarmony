@@ -29,7 +29,7 @@ const http = require('http')
 const cors = require('cors')
 const router = require('./router')
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 4000
 
 
 const app = express()
@@ -43,9 +43,10 @@ app.use(cors())
 app.use(router)
 io.on('connection', (socket) => {
     socket.on("join", (roomID, userName)=> {
+        console.log(roomID, userName)
+        console.log("welcome, " , roomID,userName );
         socket.join(roomID);
-        socket.to(roomID).emit("welcome", userName);
-        console.log("welcome, ");
+        socket.to(roomID).emit("welcome",);
     });
     socket.on("offer", (offer, roomId ) => {
         socket.to(roomId).emit("offer", offer);

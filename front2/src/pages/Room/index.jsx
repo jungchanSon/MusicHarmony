@@ -10,30 +10,35 @@ import CameraOptions from "../../components/Room/CameraOptions";
 import {string} from "sockjs-client/lib/utils/random";
 import io from 'socket.io-client'
 import VideoBox from "../../components/Room/VideoBox";
+import {RoomStore} from "../../store/RoomStore";
 
 
 
 let socket;
 let myPeerConnection;
-let streamProps;
 const Room = () => {
-    const rf = useRef();
-    const socket = io("http://localhost:8000");
+    const [streamPr, setStreamprops ] = useState();
 
+    const rf = useRef();
+    const socket = io("http://localhost:4000");
+    useEffect(() => {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            setStreamprops(stream);
+        });
+    }, [])
 
     const{userStream, setUserStream, setMyPeerConnection} =MediaStreamStore();
-
+    const {usersInRoom, addUser} = RoomStore()
     let myStream;
     var roomID = null;
     var userName = null;
-
-
 
     if (typeof window !== 'undefined') {
         roomID=localStorage.getItem("roomID");
         userName=localStorage.getItem("userName");
     }
 
+    //stomp 말고 socket.io로 ㄹ변경
     // const connnect =  (stompClient) => {
     //     console.log(roomID);
     //     var socket = new Sockjs('http://localhost:8080/music-harmony');
@@ -96,6 +101,7 @@ const Room = () => {
                 deviceId ? cameraConstraints : initialConstrains
             );
             setUserStream(myStream);
+            console.log("ststst", streamPr)
             if (!deviceId) {
                 await getCameras();
                 console.log("zzzzzzzzzz")
@@ -114,6 +120,7 @@ const Room = () => {
     const handleAddStream = (data) => {
         console.log("got an event from my peer");
         rf.current.srcObject= data.stream
+        console.log(streamPr)
     }
 
     const makeConnection = () => {
@@ -132,30 +139,22 @@ const Room = () => {
         console.log("makeCon");
         return myPeerConnection;
     }
-    //
-    // const setMyPeerLocalDesc = () => {
-    //     const offer = myPeerConnection.createOffer();
-    //     myPeerConnection.setLocalDescription(offer);
-    // }
 
     const init = async () => {
         await getMedia();
         makeConnection();
         console.log("initMy");
-        // setMyPeerLocalDesc();
     }
 
     useEffect(() =>{
-        // init().then( () => {
-        //     socket.emit("join", roomID, userName);
-        // });
         getMedia().then((e) => {
             makeConnection();
             socket.emit("join", roomID, userName);
+            console.log(roomID);
+            console.log(userName);
             socket.on("welcome", async (uN) => {
-                console.log("welocom", uN, "___", userName);
                 const offer = await myPeerConnection.createOffer();
-                myPeerConnection.setLocalDescription(offer);
+                myPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
                 socket.emit("offer", offer, roomID);
             });
             socket.on("offer", async (offer) => {
@@ -175,31 +174,6 @@ const Room = () => {
                 console.log("receive ic");
                 myPeerConnection.addIceCandidate(ice);
             })
-//             socket.on("welcome", async () => {
-//                 const offer = await myPeerConnection.createOffer();
-//                 myPeerConnection.setLocalDescription(offer);
-//                 console.log("offer >>> ", offer)
-//                 socket.emit("offer", offer, roomID);
-//             });
-// //ClientB, 방에 새로 들어온 사람
-//             socket.on("offer", async (offer) => {
-//                 console.log("receive the offer");
-//                 myPeerConnection.setRemoteDescription(offer);
-//                 const answer = await myPeerConnection.createAnswer();
-//                 myPeerConnection.setLocalDescription(answer);
-//                 socket.emit("answer", answer, roomID);
-//                 console.log("sent the answer");
-//
-//             });
-// //ClientA, Answer 수신 저장
-//             socket.on("answer", async (answer) => {
-//                 console.log("recieve the answer");
-//                 myPeerConnection.setRemoteDescription(answer);
-//             });
-//
-
-
-
         });
         console.log("qqqqqqqqqqqqqqqqqqqqqqqq");
 
@@ -208,44 +182,12 @@ const Room = () => {
     const test = () => {
         socket.emit("offer")
     }
-        // socket.emit("join", roomID, userName);
-        // socket.on("welcome", async (uN) => {
-        //     console.log("welocom");
-        //     if(uN !== userName && myPeerConnection){
-        //         const offer = await myPeerConnection.createOffer();
-        //         myPeerConnection.setLocalDescription(offer);
-        //         socket.emit("offer", offer, roomID);
-        //     }
-        // });
-        //
-        // socket.on("offer", async (offer) => {
-        //     console.log("offer");
-        //     if(uN !== userName && myPeerConnection) {
-        //         const answer = await myPeerConnection.createAnswer();
-        //         myPeerConnection.setLocalDescription(answer);
-        //         myPeerConnection.setRemoteDescription(offer);
-        //         socket.emit("answer", answer);
-        //     }
-        // })
-        // socket.on("answer", async (answer) => {
-        //     if(uN !== userName && myPeerConnection) {
-        //         console.log("answer");
-        //         myPeerConnection.setRemoteDescription(answer);
-        //     }
-        // })
-
-    // socket.on( , async () => {
-    //
-    // })
-    // socket.on( , async () => {
-    //
-    // })
 
     return (
         <div>
             <h1>Room</h1>
             <UserVideo autoPlay></UserVideo>
-            <VideoBox stream={streamProps}></VideoBox>
+            <VideoBox streamm={streamPr}     autoPlay></VideoBox>
             <CameraOptions ></CameraOptions>
             <video ref={ rf} style={{width: "100px", height:"100px"}} autoPlay></video>
             <div>

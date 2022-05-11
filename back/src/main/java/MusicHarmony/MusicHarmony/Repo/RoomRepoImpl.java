@@ -37,5 +37,24 @@ public class RoomRepoImpl implements RoomRepo{
         roomRepo.remove(id);
     }
 
+    @Override
+    public List getRoomUsers(String roomId) {
+        return roomRepo.get(roomId).getUserList();
+    }
+
+    @Override
+    public void addUser(String roomId, String userName) {
+        System.out.println(roomRepo.values());
+        System.out.println(roomRepo.keySet());
+        System.out.println(roomId);
+        Room room =roomRepo.get(roomId);
+        room.addUser(userName);
+        System.out.println(room);
+    }
+
+    @Override
+    public void removeUser(String roomId, String userName) {
+        roomRepo.get(roomId).removeUser(userName);
+    }
 
 }

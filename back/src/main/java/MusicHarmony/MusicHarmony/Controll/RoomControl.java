@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class RoomControl {
     private final RoomRepoImpl roomRepo;
     private final RoomService roomService;
 
-    String localUrl= "localhost";
+    String localUrl = "localhost";
     String server = "";
 
     //방만들기
@@ -33,18 +34,43 @@ public class RoomControl {
     //모든 방 조회
     @GetMapping("/getRooms")
     @ResponseBody
-    public List<Room> getRooms(){
+    public List<Room> getRooms() {
         return roomService.getRooms();
     }
 
     //방 들어가기
     @GetMapping("/enterRoom/{roomID}")
     @ResponseBody
-    public String roomEnter(Model model, @PathVariable String roomID){
+    public String roomEnter(Model model, @PathVariable String roomID) {
         System.out.println("enterRoom" + roomID);
 
         return "Ok";
     }
+
+    @GetMapping("/getUsers/{roomId}")
+    @ResponseBody
+    public List getUsers(@PathVariable String roomId) {
+        return roomService.getUsers(roomId);
+    }
+
+    @PostMapping("/addUser")
+    @ResponseBody
+        public void addUser(@RequestParam String roomId,@RequestParam String userId) {
+        System.out.println("roomId = " + roomId);
+        System.out.println("roomId = " + userId);
+        roomService.enterUser(roomId, userId);
+    }
+
+    @GetMapping("/removeUser")
+    @ResponseBody
+    public void removeUser(String roomId, String userId){
+        roomService.removeUser(roomId, userId);
+    }
+
+
+    //Test들~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
 //    @PostMapping("/create")
 //    @ResponseBody

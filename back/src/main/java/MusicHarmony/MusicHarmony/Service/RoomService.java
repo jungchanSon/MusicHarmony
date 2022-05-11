@@ -22,4 +22,18 @@ public class RoomService {
     public List<Room> getRooms() {
         return roomRepo.fineAllRoom();
     }
+
+
+    public List getUsers(String roomId) {
+
+        return roomRepo.getRoomUsers(roomId);
+    }
+
+    public void enterUser(String roomId, String userName){
+        roomRepo.addUser(roomId, userName);
+    }
+
+    public void removeUser(String roomId, String userName){
+        roomRepo.removeUser(roomId, userName);
+    }
 }

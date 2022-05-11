@@ -6,6 +6,8 @@ import {GetRooms, RoomEnter} from "../api/roomAPI";
 import UserNameForm from "../../components/User/userNameForm";
 
 const Room = () => {
+    const LocalURL = "http://localhost:8080"
+
     //roomListStore 업데이트
     const {roomList} = RoomStore();
     GetRooms();
@@ -15,9 +17,8 @@ const Room = () => {
     const enterRoomClick= (e) => {
         localStorage.setItem("roomID", e.target.id)
         localStorage.setItem("roomName", e.target.value)
-        console.log(localStorage.getItem("userName"));
+
         RoomEnter(e.target.id);
-        console.log("room enter >> ", e.target.id);
     }
     return (
         <div>

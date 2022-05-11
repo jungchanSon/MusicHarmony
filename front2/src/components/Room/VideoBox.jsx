@@ -1,20 +1,19 @@
 import styled from "styled-components";
-import {useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 
-const VideoBox = (props) => {
-    const videoRef = useRef()
+const VideoBox = ({stream}) => {
+    const ref = useRef(null);
+    const [isMuted, setIsMuted] = useState(false);
 
-    if (props.stream)
-        videoRef.current.srcObject = props.stream;
+    useEffect(() => {
+        if (ref.current) ref.current.srcObject = stream;
+    });
 
-    return(
+    return (
         <>
-            <Vb ref={videoRef} autoPlay></Vb>
+            <video ref={ref} muted={isMuted} autoPlay></video>
         </>
     );
-}
-const Vb = styled.video`
-  width: 100px;
-  height: 100px;
-`
+};
+
 export default VideoBox;

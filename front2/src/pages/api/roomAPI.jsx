@@ -15,12 +15,13 @@ const getRoomEnterURL = LocalURL +'/enterRoom/'
 //TODO : 서버 리다이렉트로 고쳐보기
 const RoomEnter = (roomID) => {
     axios.get(getRoomEnterURL+roomID).then(e =>{
-        if(e.data == "Ok") {
+        if(e.data == "Ok")
             location.href = "http://localhost:3000/Room";
-            console.log(localStorage.get("userName"));
-        } else {
-            console.log("Room Enter Error");
-        }
+    }).then(() => {
+        var param = new URLSearchParams();
+        param.append("roomId", roomID);
+        param.append("userId", localStorage.getItem("userName"));
+        axios.post(localURL +"/addUser", )
     })
 }
 
@@ -38,7 +39,6 @@ const GetRooms = () => {
     const {update} = RoomStore();
     useEffect(() => {
         axios.get(getRoomListURL).then((e) => {
-            console.log("updatetetete")
             update(e.data);
         });
     }, []);
