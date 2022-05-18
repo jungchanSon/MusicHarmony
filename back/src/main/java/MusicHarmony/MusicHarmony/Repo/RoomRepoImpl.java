@@ -28,7 +28,7 @@ public class RoomRepoImpl implements RoomRepo{
     @Override
     public Room createRoom(String name) {
         Room room = Room.create(name);
-        roomRepo.put(room.getRoomID(), room);
+        roomRepo.put(room.getRoomId(), room);
         return room;
     }
 

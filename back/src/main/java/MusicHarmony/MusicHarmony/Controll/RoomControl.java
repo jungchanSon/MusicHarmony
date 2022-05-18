@@ -4,12 +4,10 @@ import MusicHarmony.MusicHarmony.Repo.RoomRepoImpl;
 import MusicHarmony.MusicHarmony.Service.RoomService;
 import MusicHarmony.MusicHarmony.VO.Room;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,16 +53,18 @@ public class RoomControl {
 
     @PostMapping("/addUser")
     @ResponseBody
-        public void addUser(@RequestParam String roomId,@RequestParam String userId) {
-        System.out.println("roomId = " + roomId);
-        System.out.println("roomId = " + userId);
-        roomService.enterUser(roomId, userId);
+        public void addUser(@RequestBody Map<String, String> map) {
+        System.out.println("roomId = " + map.get("roomId"));
+        System.out.println("roomnName = " + map.get("userName"));
+        roomService.addUserInRoom(map.get("roomId"), map.get("userName"));
+        System.out.println("~~Userlist~~");
+        System.out.println(roomService.getUsers(map.get("roomId")));
     }
 
-    @GetMapping("/removeUser")
+    @PostMapping("/removeUser")
     @ResponseBody
-    public void removeUser(String roomId, String userId){
-        roomService.removeUser(roomId, userId);
+    public void removeUser(@RequestBody Map<String, String> map){
+        roomService.removeUser(map.get("roomId"), map.get("userName"));
     }
 
 

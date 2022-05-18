@@ -29,7 +29,7 @@ public class RoomService {
         return roomRepo.getRoomUsers(roomId);
     }
 
-    public void enterUser(String roomId, String userName){
+    public void addUserInRoom(String roomId, String userName){
         roomRepo.addUser(roomId, userName);
     }
 

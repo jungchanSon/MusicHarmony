@@ -15,7 +15,7 @@ const Room = () => {
 
     //방들어가기 클릭
     const enterRoomClick= (e) => {
-        localStorage.setItem("roomID", e.target.id)
+        localStorage.setItem("roomId", e.target.id)
         localStorage.setItem("roomName", e.target.value)
 
         RoomEnter(e.target.id);
@@ -26,7 +26,7 @@ const Room = () => {
             <UserNameForm />
             <h1 className={"mt-10"}>방 목록</h1>
             {arrayRoomList.map( (item, key) => (
-                <li key={key} className={"m-4"} id={item.roomID} onClick={enterRoomClick}>
+                <li key={key} className={"m-4"} id={item.roomId} onClick={enterRoomClick}>
                     {item.name}
                 </li>
             ))}

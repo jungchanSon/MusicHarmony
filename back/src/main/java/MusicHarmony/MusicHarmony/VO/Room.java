@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Room {
-    private String roomID;
+    private String roomId;
     private String name;
     @Nullable private List userList = new ArrayList();
 
@@ -27,7 +27,7 @@ public class Room {
 
     public static Room create(String name){
         Room room = new Room();
-        room.roomID = UUID.randomUUID().toString();
+        room.roomId = UUID.randomUUID().toString();
         room.name = name;
         return room;
     }

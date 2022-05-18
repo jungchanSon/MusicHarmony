@@ -13,13 +13,13 @@ const getRoomEnterURL = LocalURL +'/enterRoom/'
 
 //방 입장
 //TODO : 서버 리다이렉트로 고쳐보기
-const RoomEnter = (roomID) => {
-    axios.get(getRoomEnterURL+roomID).then(e =>{
+const RoomEnter = (roomId) => {
+    axios.get(getRoomEnterURL+roomId).then(e =>{
         if(e.data == "Ok")
             location.href = "http://localhost:3000/Room";
     }).then(() => {
         var param = new URLSearchParams();
-        param.append("roomId", roomID);
+        param.append("roomId", roomId);
         param.append("userId", localStorage.getItem("userName"));
         axios.post(localURL +"/addUser", )
     })

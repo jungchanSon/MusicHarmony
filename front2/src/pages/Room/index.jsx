@@ -1,23 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
-import styled from "styled-components";
-import Sockjs from "sockjs-client";
-import Stomp from "stompjs";
-import {UserStore} from "../../store/UserStore";
 import UserVideo from "../../components/Room/UserVideo";
 import {MediaStreamStore} from "../../store/MediaStreamStore";
 import Buttons from "../../components/Room/Buttons";
 import CameraOptions from "../../components/Room/CameraOptions";
-import {string} from "sockjs-client/lib/utils/random";
 import io from 'socket.io-client'
 import VideoBox from "../../components/Room/VideoBox";
 import {RoomStore} from "../../store/RoomStore";
+import axios from "axios";
 
-
-
+let userss =[];
 let socket;
 let myPeerConnection;
 const Room = () => {
     const [streamPr, setStreamprops ] = useState();
+    const [asdf, useAsdf] = useState(["asdf", "asdf" ,"asdf" ,"asdf" ]);
+
+    const [userss, setUserss] = useState([]);
 
     const rf = useRef();
     const socket = io("http://localhost:4000");
@@ -28,31 +26,31 @@ const Room = () => {
     }, [])
 
     const{userStream, setUserStream, setMyPeerConnection} =MediaStreamStore();
-    const {usersInRoom, addUser} = RoomStore()
+    const {usersInRoom,userlen, addUser, setUserLen} = RoomStore()
     let myStream;
-    var roomID = null;
+    var roomId = null;
     var userName = null;
 
     if (typeof window !== 'undefined') {
-        roomID=localStorage.getItem("roomID");
+        roomId=localStorage.getItem("roomId");
         userName=localStorage.getItem("userName");
     }
 
     //stomp 말고 socket.io로 ㄹ변경
     // const connnect =  (stompClient) => {
-    //     console.log(roomID);
+    //     console.log(roomId);
     //     var socket = new Sockjs('http://localhost:8080/music-harmony');
     //     stompClient = Stomp.over(socket);
     //     stompClient.connect(
     //         {},
     //         frame => {
-    //             stompClient.subscribe('/sub/musicRoom/'+roomID, (msg) => {
+    //             stompClient.subscribe('/sub/musicRoom/'+roomId, (msg) => {
     //                 var message = JSON.parse(msg.body)
     //
     //                 if(message.type === "ENTER" && message.userName !== userName) {
     //                     const offer = myPeerConnection.createOffer().then(offer => {
     //                         myPeerConnection.setLocalDescription(offer);
-    //                         stompClient.send('/pub/musicRoom/offer', {},JSON.stringify({roomID:roomID, userName:userName, description:offer, type:"OFFER"}));
+    //                         stompClient.send('/pub/musicRoom/offer', {},JSON.stringify({roomId:roomId, userName:userName, description:offer, type:"OFFER"}));
     //                         console.log("Promise.toString(offer)", myPeerConnection);
     //                     });
     //                 }
@@ -66,7 +64,7 @@ const Room = () => {
     //                     })
     //                 }
     //             });
-    //             stompClient.send('/pub/musicRoom/enter',{}, JSON.stringify({roomID:roomID, userName:userName, message:"enter", type:"ENTER"}));
+    //             stompClient.send('/pub/musicRoom/enter',{}, JSON.stringify({roomId:roomId, userName:userName, message:"enter", type:"ENTER"}));
     //
     //         },
     //         error => {
@@ -114,12 +112,14 @@ const Room = () => {
 //webRTC 사이클
     const handleIce = (data) => {
         console.log("sent candidate");
-        socket.emit("ice", data.candidate, roomID);
+        socket.emit("ice", data.candidate, roomId);
     }
 
     const handleAddStream = (data) => {
         console.log("got an event from my peer");
         rf.current.srcObject= data.stream
+
+
         console.log(streamPr)
     }
 
@@ -140,39 +140,123 @@ const Room = () => {
         return myPeerConnection;
     }
 
+    const makeConnections = (user) => {
+        const pc = new RTCPeerConnection({
+            iceServers: [
+                {
+                    urls: [
+                        "stun:stun.l.google.com:19302",
+                    ],
+                },
+            ],
+        });
+        pc.addEventListener("icecandidate", handleIce);
+        pc.addEventListener("addstream", (data) => {
+            let tempUsers = userss.filter((e) => e.id === user);
+            tempUsers.stream = data.stream;
+            let tempUser2 = userss.filter((e) => e.id !== user);
+            setUserss(tempUser2.concat(tempUsers))
+        });
+
+        myStream.getTracks().forEach((track) => pc.addTrack(track, myStream));
+
+        //
+        // const offer = pc.createOffer();
+        // pc.setLocalDescription(offer);
+
+        // pc.ontrack = (e) => {
+        //     setUserss(userss.filter((e) => e.id !== user)
+        //         .concat({
+        //             "id": user,
+        //             "pc": pc,
+        //             "stream": e.stream,
+        //         })
+        //     )
+        // }
+        console.log("makeCon");
+        return pc;
+    }
+
     const init = async () => {
         await getMedia();
-        makeConnection();
+        makeConnections();
         console.log("initMy");
     }
 
     useEffect(() =>{
         getMedia().then((e) => {
-            makeConnection();
-            socket.emit("join", roomID, userName);
-            console.log(roomID);
-            console.log(userName);
-            socket.on("welcome", async (uN) => {
-                const offer = await myPeerConnection.createOffer();
-                myPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
-                socket.emit("offer", offer, roomID);
+            socket.emit("join", roomId, userName);
+            socket.on("welcome", async (users) => {
+                console.log(users)
+                users.forEach((user) => {
+                    const pc = makeConnections(user);
+                    const offer = pc.createOffer();
+                    pc.setLocalDescription(offer);
+                    if(user){
+                        // addUser({
+                        //     "id": user,
+                        //     "pc": pc,
+                        // });
+                        setUserss([...userss, {
+                            "id": user,
+                            "pc": pc,
+                        }])
+                    }
+                    console.log("users.push()")
+                    socket.emit("offer", {
+                        "sdp" : offer,
+                        "sender": socket.id,
+                        "receive": user.id
+                    })
+                })
+
+                usersInRoom.forEach((user) => {
+                    const offer = user[1].createOffer();
+                    socket.emit("offer", {
+                        "sdp": offer,
+                        "sender": socket.id,
+                        "receive": user.id
+                    })
+                })
             });
             socket.on("offer", async (offer) => {
+
+                // const targetUser = userss.find(user => user.id === offer.sender);
+                // const pc = targetUser.pc;
+
+
+                const pc = makeConnections(offer.sender);
+
+                pc.setRemoteDescription(offer.sdp);
+                const answer = await pc.createAnswer();
+                pc.setLocalDescription(answer);
+
+                socket.emit("answer",{
+                    sdp: answer,
+                    sender: socket.id,
+                    receive: offer.sender,
+                });
                 console.log("offer");
-                myPeerConnection.setRemoteDescription(offer);
-                const answer = await myPeerConnection.createAnswer();
-                myPeerConnection.setLocalDescription(answer);
-                socket.emit("answer", answer,roomID);
-                console.log(myPeerConnection)
             })
+
             socket.on("answer", async (answer) => {
+
+                const targetUser = userss.find(user => user.id === answer.sender);
+                const pc = targetUser.pc;
+
+                pc.setRemoteDescription(new RTCSessionDescription(answer.sdp));
+
                 console.log("answer");
-                myPeerConnection.setRemoteDescription(answer);
-                console.log(myPeerConnection)
             })
+
             socket.on("ice", ice => {
+
+                const targetUser = userss.find(user => user.id === ice.sender);
+                const pc = targetUser.pc;
+
+                pc.addIceCandidate(new RTCIceCandidate(ice.ice));
+
                 console.log("receive ic");
-                myPeerConnection.addIceCandidate(ice);
             })
         });
         console.log("qqqqqqqqqqqqqqqqqqqqqqqq");
@@ -185,8 +269,17 @@ const Room = () => {
 
     return (
         <div>
+            <button onClick={e => console.log(userss.length)}>bbbbbbbbb</button>
+            <button onClick={e => console.log(userss)}>bbbbbbbbb</button>
+            <button onClick={e => {
+                console.log(asdf);
+            }}>zxczczxc</button>
             <h1>Room</h1>
             <UserVideo autoPlay></UserVideo>
+            <VideoBox streamm={streamPr} autoPlay></VideoBox>
+            {userss.map((user, index) => (
+                <div key={index}> {user.stream} </div>
+            ))}
             <VideoBox streamm={streamPr}     autoPlay></VideoBox>
             <CameraOptions ></CameraOptions>
             <video ref={ rf} style={{width: "100px", height:"100px"}} autoPlay></video>

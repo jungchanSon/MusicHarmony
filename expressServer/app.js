@@ -28,6 +28,7 @@ const http = require('http')
 
 const cors = require('cors')
 const router = require('./router')
+const axios = require("axios");
 
 const PORT = process.env.PORT || 4000
 
@@ -41,24 +42,60 @@ const io = socketio(server,{
 })
 app.use(cors())
 app.use(router)
+
+let room = {
+}
+
 io.on('connection', (socket) => {
-    socket.on("join", (roomID, userName)=> {
-        console.log(roomID, userName)
-        console.log("welcome, " , roomID,userName );
-        socket.join(roomID);
-        socket.to(roomID).emit("welcome",);
+    socket.on("join", (roomId, userName)=> {
+        room[socket.id] = roomId;
+        axios.post("http://localhost:8080/addUser", {"roomId":roomId,"userName":socket.id } )
+            .then( () =>{
+                axios.get("http://localhost:8080/getUsers/"+roomId).then(e => {
+                    let users = e.data;
+                    console.log(users);
+                    socket.join(roomId);
+                    socket.to(roomId).emit("welcome", users);
+                }).catch(e => console.log(e))}
+            )
+        // socket.to(roomId).emit("welcome");
+        // console.log(room.key)
     });
-    socket.on("offer", (offer, roomId ) => {
-        socket.to(roomId).emit("offer", offer);
-        console.log("woffer, ");
+    socket.on("offer", (e) => {
+        socket.to(e.receive).emit("offer", {
+            "sdp": e.sdp,
+            "sender": e.sender,
+        });
+        console.log(e.receive+"  -->  "+e.sdp);
     });
-    socket.on("answer", (answer, roomId) => {
-        socket.to(roomId).emit("answer", answer);
-        console.log("answer, ");
+
+    socket.on("answer", (e) => {
+        socket.to(e.receive).emit("answer", {
+            "sdp": e.sdp,
+            "sender": e.sender,
+        });
     });
-    socket.on("ice", (ice, roomId) => {
-        socket.to(roomId).emit("ice", ice);
+
+    socket.on("ice", (e) => {
+        socket.to(e.receive).emit("ice", {
+            ice : e.candidate,
+            sender: e.sender,
+        });
+
         console.log("ice");
     });
+
+    socket.on("disconnect", (e) => {
+
+        if(room[socket.id]){
+            const roomId = room[socket.id];
+            axios.post("http://localhost:8080/removeUser", {"roomId":roomId , "userName":socket.id});
+
+            delete room[socket.id];
+
+            console.log("연결 종료", socket.id);
+            console.log("연결 방이름", roomId);
+        }
+    })
 })
 server.listen(PORT, () => console.log(`서버가 ${PORT} 에서 시작되었어요`))

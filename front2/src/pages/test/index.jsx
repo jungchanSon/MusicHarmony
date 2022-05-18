@@ -11,7 +11,7 @@ const index = () => {
     const {roomList} = RoomStore();
 
     axios.get(LocalURL+"/getRooms").then((e)=> {
-        id = e.data[0].roomID;
+        id = e.data[0].roomId;
         console.log(id);
         console.log(typeof "dbs")
         param.append("roomId", id)
