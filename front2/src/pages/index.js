@@ -1,17 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import io from "socket.io-client";
 
 let socket
 
 const MainPage = () => {
 
-    const test = (e ) => {
-        e.preventDefault();
-        socket.emit('offer', "asdasdasdad");
-    }
+    const [test, setTest] = useState({});
+
+    useEffect( () => {
+        setTest({
+            ...test,
+            123:123
+        })
+    }, [])
+
+    console.log( test )
     return (
         <>
-            <button onClick={test}></button>
+
             {/*<button onClick={connnect}>connect test</button>*/}
             {/*<button onClick={testButton}>testSendButton</button>*/}
 

@@ -19,6 +19,7 @@ const Room = () => {
 
     const rf = useRef();
     const socket = io("http://localhost:4000");
+
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
             setStreamprops(stream);
@@ -85,6 +86,7 @@ const Room = () => {
 
         }catch (e) {console.log(e)}
     }
+
     const getMedia = async (deviceId) =>  {
         const initialConstrains = {
             audio : false,
@@ -99,10 +101,8 @@ const Room = () => {
                 deviceId ? cameraConstraints : initialConstrains
             );
             setUserStream(myStream);
-            console.log("ststst", streamPr)
             if (!deviceId) {
                 await getCameras();
-                console.log("zzzzzzzzzz")
             }
         } catch (e) {
             console.log(e);
@@ -111,7 +111,6 @@ const Room = () => {
 
 //webRTC 사이클
     const handleIce = (data) => {
-        console.log("sent candidate");
         socket.emit("ice", data.candidate, roomId);
     }
 
@@ -119,27 +118,25 @@ const Room = () => {
         console.log("got an event from my peer");
         rf.current.srcObject= data.stream
 
-
-        console.log(streamPr)
     }
 
-    const makeConnection = () => {
-        myPeerConnection = new RTCPeerConnection({
-            iceServers: [
-                {
-                    urls: [
-                        "stun:stun.l.google.com:19302",
-                    ],
-                },
-            ],
-        });
-        myPeerConnection.addEventListener("icecandidate", handleIce);
-        myPeerConnection.addEventListener("addstream", handleAddStream);
-        myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
-        console.log("makeCon");
-        return myPeerConnection;
-    }
-
+    // const makeConnection = () => {
+    //     myPeerConnection = new RTCPeerConnection({
+    //         iceServers: [
+    //             {
+    //                 urls: [
+    //                     "stun:stun.l.google.com:19302",
+    //                 ],
+    //             },
+    //         ],
+    //     });
+    //
+    //     myPeerConnection.addEventListener("icecandidate", handleIce);
+    //     myPeerConnection.addEventListener("addstream", handleAddStream);
+    //     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
+    //     console.log("makeCon");
+    //     return myPeerConnection;
+    // }
     const makeConnections = (user) => {
         const pc = new RTCPeerConnection({
             iceServers: [
@@ -150,7 +147,15 @@ const Room = () => {
                 },
             ],
         });
-        pc.addEventListener("icecandidate", handleIce);
+        pc.onicecandidate = (e) => {
+            socket.emit("ice", {
+                cadidate: e.candidate,
+                sender: socket.id,
+                receive: user,
+            });
+        }
+
+        // pc.addEventListener("icecandidate", handleIce);
         pc.addEventListener("addstream", (data) => {
             let tempUsers = userss.filter((e) => e.id === user);
             tempUsers.stream = data.stream;
@@ -160,20 +165,7 @@ const Room = () => {
 
         myStream.getTracks().forEach((track) => pc.addTrack(track, myStream));
 
-        //
-        // const offer = pc.createOffer();
-        // pc.setLocalDescription(offer);
-
-        // pc.ontrack = (e) => {
-        //     setUserss(userss.filter((e) => e.id !== user)
-        //         .concat({
-        //             "id": user,
-        //             "pc": pc,
-        //             "stream": e.stream,
-        //         })
-        //     )
-        // }
-        console.log("makeCon");
+        console.log("makeConnection()");
         return pc;
     }
 
@@ -184,52 +176,45 @@ const Room = () => {
     }
 
     useEffect(() =>{
+
+        socket.emit("join", roomId, userName);
         getMedia().then((e) => {
-            socket.emit("join", roomId, userName);
             socket.on("welcome", async (users) => {
                 console.log(users)
                 users.forEach((user) => {
+                    console.log("users", user);
                     const pc = makeConnections(user);
                     const offer = pc.createOffer();
                     pc.setLocalDescription(offer);
+
                     if(user){
-                        // addUser({
-                        //     "id": user,
-                        //     "pc": pc,
-                        // });
-                        setUserss([...userss, {
-                            "id": user,
-                            "pc": pc,
-                        }])
+                        setUserss({...userss, [user]: pc});
+                        console.log("users.push()", userss);
                     }
-                    console.log("users.push()")
                     socket.emit("offer", {
                         "sdp" : offer,
                         "sender": socket.id,
-                        "receive": user.id
-                    })
-                })
+                        "receive": user,
+                        "roomId" : roomId
+                    });
 
-                usersInRoom.forEach((user) => {
-                    const offer = user[1].createOffer();
-                    socket.emit("offer", {
+                    console.log("emit offer", {
                         "sdp": offer,
                         "sender": socket.id,
-                        "receive": user.id
+                        "receive": user
                     })
                 })
             });
             socket.on("offer", async (offer) => {
-
-                // const targetUser = userss.find(user => user.id === offer.sender);
-                // const pc = targetUser.pc;
-
-
+                console.log("offer cycle");
                 const pc = makeConnections(offer.sender);
 
                 pc.setRemoteDescription(offer.sdp);
                 const answer = await pc.createAnswer();
                 pc.setLocalDescription(answer);
+
+                setUserss({...userss, [offer.sender]: pc});
+                console.log("users.push()", userss);
 
                 socket.emit("answer",{
                     sdp: answer,
@@ -257,10 +242,8 @@ const Room = () => {
                 pc.addIceCandidate(new RTCIceCandidate(ice.ice));
 
                 console.log("receive ic");
-            })
-        });
-        console.log("qqqqqqqqqqqqqqqqqqqqqqqq");
-
+            });
+        })
     }, [])
 
     const test = () => {
