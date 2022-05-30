@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
 
 
     socket.on("disconnect", (e) => {
-
+        console.log("disconnt")
         if(room[socket.id]){
             const roomId = room[socket.id];
             axios.post("http://localhost:8080/removeUser", {"roomId":roomId , "userName":socket.id});
@@ -92,7 +92,11 @@ io.on('connection', (socket) => {
 
             console.log("연결 종료", socket.id);
             console.log("연결 방이름", roomId);
+
+            socket.to(roomId).emit("exit", socket.id);
         }
+
+        socket.to(e.room).emit("exit", socket.id)
     })
 })
 server.listen(PORT, () => console.log(`서버가 ${PORT} 에서 시작되었어요`))

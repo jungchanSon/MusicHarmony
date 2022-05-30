@@ -2,9 +2,9 @@
 
 
 export const layoutColors = {
-    main: "#CA96E0",
-    sub: "#B593ED",
-    nav: "#A793E0"
+    main: "#FFFFFF",
+    sub: "#FFFFFF",
+    nav: "#FFFFFF"
 
 };
 

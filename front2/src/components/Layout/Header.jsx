@@ -6,8 +6,10 @@ const Header = () => {
 
     return(
         <>
-                <HeaderBox className={"pt-4"}>
-                    <h1 className={"text-5xl"} >Music Harmony</h1>
+                <HeaderBox >
+                        <Img src="/img/logo.png"></Img>
+                        <h1 className="text-6xl" >Music Harmony</h1>
+
                     <Nav/>
                 </HeaderBox>
         </>
@@ -21,16 +23,21 @@ const Header = () => {
 // `
 const HeaderBox = styled.div`
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   background: ${props => props.theme.layoutColors.nav};
+  border-bottom: 3px solid darkblue;
 
     font-family: 'Gamja Flower', cursive;
 `
-const LogoBox = styled.img`
-  width: 30%;
-    height: min-content;
+const FlexBox = styled.img`
+    display: flex;
+  
+`
+
+const Img = styled.img`
+width: 10%;
 `
 export default Header;

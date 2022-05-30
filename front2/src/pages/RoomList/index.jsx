@@ -20,6 +20,8 @@ const Room = () => {
 
         RoomEnter(e.target.id);
     }
+    // console.log("page", window.location.pathname)
+
     return (
         <div>
             <h1 className={"mb-10"}> 이름을 먼저 적어주세요 </h1>

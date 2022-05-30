@@ -219,16 +219,32 @@ const Room = () => {
                 const pc = peerArray.current[e.sender];
                 console.log("const pc = peerArray.current[e.senderId]", pc)
                 // if( e.receiverId == socket.id)
-                if(pc)
+                if (pc)
                     pc.addIceCandidate(e.candidate);
 
                 console.log("ice end");
                 console.log("peerArr", peerArray.current)
                 console.log("peerStreaArr", peerStreamArray)
             })
-        })
 
+            socket.on("exit", async (e) =>{
+                console.log("exit Start")
 
+                // peerArray.current = {
+                //     ...peerArray.current,
+                //     [e.senderId]: pc,
+                // };
+
+                // peerArray.current = peerArray.current.filter((user) => user.id != e)
+                console.log(e)
+                console.log("eee", peerArray.current[e])
+                delete peerArray.current[e]
+
+                setPeerStreamArray((peer) => peer.filter((item)=> item.id != e));
+
+                console.log("exit End")
+            })
+        });
     }, [makeConnection]);
 
     const mediaCtrl = () => {
@@ -240,7 +256,8 @@ const Room = () => {
     }
 
     const test = ()=> {
-        console.log(peerStreamArray)
+        console.log("peerStreamArray", peerStreamArray)
+        console.log("peerArray", peerArray)
     }
     return(
         <div>

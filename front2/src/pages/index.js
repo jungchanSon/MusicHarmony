@@ -1,101 +1,101 @@
 import React, {useEffect, useState} from 'react';
 import io from "socket.io-client";
-
+import Head from "next/head"
+import styled from "styled-components";
 let socket
 
 const MainPage = () => {
 
     const [test, setTest] = useState({});
+    //
+    // const tests = async () => {
+    //     const devices = await navigator.mediaDevices.enumerateDevices();
+    //     if (navigator.requestMIDIAccess) {
+    //         alert('This browser supports WebMIDI!');
+    //         await navigator.requestMIDIAccess().then((access) => {
+    //             const input = access.inputs.values();
+    //             const output= access.outputs.values();
+    //             access.onstatechange = event => {
+    //
+    //                 // Print information about the (dis)connected MIDI controller
+    //                 console.log(event.port.name, event.port.manufacturer, event.port.state);
+    //             };
+    //             console.log(access.inputs);
+    //         })
+    //     }
+    //     console.log(devices);
+    // }
 
-    useEffect( () => {
-        setTest({
-            ...test,
-            123:123
-        })
-    }, [])
+    // useEffect( () => {
+    //     setTest({
+    //         ...test,
+    //         123:123
+    //     })
+    //
+    //     tests();
+    // }, [])
 
     console.log( test )
     return (
-        <>
+        <div className="flex flex-col justify-center content-center">
+            <Session >
+                <div >
+                    뮤직 하모니는 누구나 쉽게 이용할 수 있는 온라인 음악 협업 플랫폼입니다!
+                </div>
+                <Img src="/img/mainImg1.png">
+                </Img>
+            </Session>
 
-            {/*<button onClick={connnect}>connect test</button>*/}
-            {/*<button onClick={testButton}>testSendButton</button>*/}
+            <Line className={"text-xs"}></Line>
 
-            <br/><br/><br/><br/><br/><br/><br/><br/>
+            <Session>
+                <div>
+                    1. 가지고 있는 오디오 인터페이스에 악기를 연결 후, 컴퓨터와 연결해주세요.
+                </div>
+                <Img src="/img/firstStep.jpg"></Img>
+            </Session>
+
+            <Session className="mt-20">
+                <Img src="/img/secondStep.jpg"></Img>
+
+                <div>
+                    2. 방을 만들거나 다른 사람의 방에 입장해 주세요.
+                </div>
+            </Session>
+
+            <Session className="mt-20">
+                <div>
+                    3. 이제 다른 사람들과 합주를 진행하실 수 있습니다.
+                </div>
+
+                <Img src="/img/thirdStep.jpg"></Img>
 
 
-                1. 프로젝트 추진배경
-                <br/><br/>
-                (1) 세계적으로 코로나 팬데믹 상황이 벌어짐으로 인해 많은 협업 방식이 온라인으로 전환될 수밖에 없었습니다. 그중 밴드부터 오케스트라까지 다양한 음악 산업 또한 어려움을 겪게 되었고, 이를 5G 환경과 엣지 컴퓨팅 기술을 적용하여 초저지연과 고도의 컴퓨팅 자원 활용이 가능한 실시간 원격 작업 방식을 통해 해결할 수 있을 것이라고 생각했습니다.
-                <br/><br/>
-                (2) 온라인에 접속하기만 하면 각자 어디서든지 같은 공간에 있는 것처럼 생생한 음악 작업이 가능해지므로 하나의 약속된 장소로 이동하는 데 걸리는 시간과 비용이 절감되고 팬데믹 상황에도 이러한 서비스를 이용하여 여러 제약으로부터 벗어날 수 있게 됩니다. 결과적으로 음악 산업의 생산성 증대 또한 가능해집니다.
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                2. 프로젝트(주제) 목표 및 내용
-                <br/><br/>
-                고품질의 음악 협업을 위해 초고속 및 고도의 컴퓨팅/스토리지/네트워킹 자원 활용이 가능한 5g mec(mobile edge computing) 기술 및 aws cloud 등을 이용하여 실시간 영상통화 및 음악 오디오 녹화와 송출을 할 수 있는 웹앱+오디오박스 형태의 서비스를 개발합니다.
-                <br/><br/>
-                1. 프로젝트 추진배경
-                <br/><br/>
-                (1) 세계적으로 코로나 팬데믹 상황이 벌어짐으로 인해 많은 협업 방식이 온라인으로 전환될 수밖에 없었습니다. 그중 밴드부터 오케스트라까지 다양한 음악 산업 또한 어려움을 겪게 되었고, 이를 5G 환경과 엣지 컴퓨팅 기술을 적용하여 초저지연과 고도의 컴퓨팅 자원 활용이 가능한 실시간 원격 작업 방식을 통해 해결할 수 있을 것이라고 생각했습니다.
-                <br/><br/>
-                (2) 온라인에 접속하기만 하면 각자 어디서든지 같은 공간에 있는 것처럼 생생한 음악 작업이 가능해지므로 하나의 약속된 장소로 이동하는 데 걸리는 시간과 비용이 절감되고 팬데믹 상황에도 이러한 서비스를 이용하여 여러 제약으로부터 벗어날 수 있게 됩니다. 결과적으로 음악 산업의 생산성 증대 또한 가능해집니다.
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                2. 프로젝트(주제) 목표 및 내용
-                <br/><br/>
-                고품질의 음악 협업을 위해 초고속 및 고도의 컴퓨팅/스토리지/네트워킹 자원 활용이 가능한 5g mec(mobile edge computing) 기술 및 aws cloud 등을 이용하여 실시간 영상통화 및 음악 오디오 녹화와 송출을 할 수 있는 웹앱+오디오박스 형태의 서비스를 개발합니다.
-                <br/><br/>
-                1. 프로젝트 추진배경
-                <br/><br/>
-                (1) 세계적으로 코로나 팬데믹 상황이 벌어짐으로 인해 많은 협업 방식이 온라인으로 전환될 수밖에 없었습니다. 그중 밴드부터 오케스트라까지 다양한 음악 산업 또한 어려움을 겪게 되었고, 이를 5G 환경과 엣지 컴퓨팅 기술을 적용하여 초저지연과 고도의 컴퓨팅 자원 활용이 가능한 실시간 원격 작업 방식을 통해 해결할 수 있을 것이라고 생각했습니다.
-                <br/><br/>
-                (2) 온라인에 접속하기만 하면 각자 어디서든지 같은 공간에 있는 것처럼 생생한 음악 작업이 가능해지므로 하나의 약속된 장소로 이동하는 데 걸리는 시간과 비용이 절감되고 팬데믹 상황에도 이러한 서비스를 이용하여 여러 제약으로부터 벗어날 수 있게 됩니다. 결과적으로 음악 산업의 생산성 증대 또한 가능해집니다.
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                2. 프로젝트(주제) 목표 및 내용
-                <br/><br/>
-                고품질의 음악 협업을 위해 초고속 및 고도의 컴퓨팅/스토리지/네트워킹 자원 활용이 가능한 5g mec(mobile edge computing) 기술 및 aws cloud 등을 이용하여 실시간 영상통화 및 음악 오디오 녹화와 송출을 할 수 있는 웹앱+오디오박스 형태의 서비스를 개발합니다.
-                <br/><br/>
-                1. 프로젝트 추진배경
-                <br/><br/>
-                (1) 세계적으로 코로나 팬데믹 상황이 벌어짐으로 인해 많은 협업 방식이 온라인으로 전환될 수밖에 없었습니다. 그중 밴드부터 오케스트라까지 다양한 음악 산업 또한 어려움을 겪게 되었고, 이를 5G 환경과 엣지 컴퓨팅 기술을 적용하여 초저지연과 고도의 컴퓨팅 자원 활용이 가능한 실시간 원격 작업 방식을 통해 해결할 수 있을 것이라고 생각했습니다.
-                <br/><br/>
-                (2) 온라인에 접속하기만 하면 각자 어디서든지 같은 공간에 있는 것처럼 생생한 음악 작업이 가능해지므로 하나의 약속된 장소로 이동하는 데 걸리는 시간과 비용이 절감되고 팬데믹 상황에도 이러한 서비스를 이용하여 여러 제약으로부터 벗어날 수 있게 됩니다. 결과적으로 음악 산업의 생산성 증대 또한 가능해집니다.
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                2. 프로젝트(주제) 목표 및 내용
-                <br/><br/>
-                고품질의 음악 협업을 위해 초고속 및 고도의 컴퓨팅/스토리지/네트워킹 자원 활용이 가능한 5g mec(mobile edge computing) 기술 및 aws cloud 등을 이용하여 실시간 영상통화 및 음악 오디오 녹화와 송출을 할 수 있는 웹앱+오디오박스 형태의 서비스를 개발합니다.
-                <br/><br/>
-                1. 프로젝트 추진배경
-                <br/><br/>
-                (1) 세계적으로 코로나 팬데믹 상황이 벌어짐으로 인해 많은 협업 방식이 온라인으로 전환될 수밖에 없었습니다. 그중 밴드부터 오케스트라까지 다양한 음악 산업 또한 어려움을 겪게 되었고, 이를 5G 환경과 엣지 컴퓨팅 기술을 적용하여 초저지연과 고도의 컴퓨팅 자원 활용이 가능한 실시간 원격 작업 방식을 통해 해결할 수 있을 것이라고 생각했습니다.
-                <br/><br/>
-                (2) 온라인에 접속하기만 하면 각자 어디서든지 같은 공간에 있는 것처럼 생생한 음악 작업이 가능해지므로 하나의 약속된 장소로 이동하는 데 걸리는 시간과 비용이 절감되고 팬데믹 상황에도 이러한 서비스를 이용하여 여러 제약으로부터 벗어날 수 있게 됩니다. 결과적으로 음악 산업의 생산성 증대 또한 가능해집니다.
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                2. 프로젝트(주제) 목표 및 내용
-                <br/><br/>
-                고품질의 음악 협업을 위해 초고속 및 고도의 컴퓨팅/스토리지/네트워킹 자원 활용이 가능한 5g mec(mobile edge computing) 기술 및 aws cloud 등을 이용하여 실시간 영상통화 및 음악 오디오 녹화와 송출을 할 수 있는 웹앱+오디오박스 형태의 서비스를 개발합니다.
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-                <br/><br/>
-
-        </>
+            </Session>
+        </div>
     );
 };
 
+const Session = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  
+  padding: 50px 30px;
+  font-weight: bold;
+  font-size: 30px;
+  font-family: 'Gamja Flower', cursive;
+  font-family: 'Nanum Gothic', sans-serif;  
+  line-height: 150%;
+`
+
+const Img = styled.img`
+  width: 80%;
+`
+
+const Line = styled.div`
+  
+  border-top: 2px solid darkslategray;
+`
 export default MainPage;
