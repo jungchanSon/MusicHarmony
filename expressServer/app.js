@@ -50,9 +50,9 @@ io.on('connection', (socket) => {
     socket.on("join", (roomId)=> {
         socket.join(roomId);
         room[socket.id] = roomId;
-        axios.post("http://54.180.146.201:8080/addUser", {"roomId":roomId,"userName":socket.id } )
+        axios.post("http://15.165.82.230:8080/addUser", {"roomId":roomId,"userName":socket.id } )
             .then( () =>{
-                axios.get("http://54.180.146.201:8080/getUsers/"+roomId).then(e => {
+                axios.get("http://15.165.82.230:8080/getUsers/"+roomId).then(e => {
                     let users = e.data;
                     socket.to(roomId).emit("welcome", socket.id);
                     console.log("users", users);
@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
         console.log("disconnt")
         if(room[socket.id]){
             const roomId = room[socket.id];
-            axios.post("http://54.180.146.201:8080/removeUser", {"roomId":roomId , "userName":socket.id});
+            axios.post("http://15.165.82.230:8080/removeUser", {"roomId":roomId , "userName":socket.id});
 
             delete room[socket.id];
 

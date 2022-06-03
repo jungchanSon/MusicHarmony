@@ -6,7 +6,7 @@ import {type} from "os";
 
 const index = () => {
     var param = new URLSearchParams();
-    const LocalURL = "http://54.180.146.201:8080"
+    const LocalURL = "http://15.165.82.230:8080"
     let id;
     const {roomList} = RoomStore();
 

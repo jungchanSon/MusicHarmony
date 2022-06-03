@@ -18,7 +18,7 @@ let myPeerConnection;
 
 const Room = () => {
     let socket;
-    socket = io("http://54.180.146.201:4000");
+    socket = io("http://15.165.82.230:4000");
 
     const {Camera, Audio, currentCamera, currentAudio, setCuurentCamera, setCuurentAudio, addAudio, addCamera, resetCameraAudio, setAudio, setCamera} = CameraAudioStore();
 

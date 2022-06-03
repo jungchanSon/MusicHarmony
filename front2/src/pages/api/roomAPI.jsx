@@ -16,7 +16,7 @@ const getRoomEnterURL = ServerURL +'/enterRoom/'
 const RoomEnter = (roomId) => {
     axios.get(getRoomEnterURL+roomId).then(e =>{
         if(e.data == "Ok")
-            location.href = "http://54.180.146.201:3000/Room";
+            location.href = "http://15.165.82.230:3000/Room";
     }).then(() => {
         var param = new URLSearchParams();
         param.append("roomId", roomId);
