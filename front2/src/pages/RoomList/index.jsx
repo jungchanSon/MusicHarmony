@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 import {RoomStore} from "../../store/RoomStore";
-import {LocalURL} from "../api/currnetServer";
+import {ServerURL} from "../api/currnetServer";
 import axios from "axios";
 import {GetRooms, RoomEnter} from "../api/roomAPI";
 import UserNameForm from "../../components/User/userNameForm";
 import styled from "styled-components";
 
 const Room = () => {
-    const LocalURL = "http://localhost:8080"
+    const LocalURL = "http://13.124.142.7:8080"
 
     //roomListStore 업데이트
     const {roomList} = RoomStore();

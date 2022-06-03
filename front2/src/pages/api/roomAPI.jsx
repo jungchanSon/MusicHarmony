@@ -1,22 +1,22 @@
 import axios from 'axios';
-import {LocalURL} from './currnetServer'
+import {ServerURL} from './currnetServer'
 import {RoomStore} from "../../store/RoomStore";
 import {useState, useEffect} from "react";
 
 
 //POST는 여기부터
-const createRoomURL = LocalURL +'/createRoom';
+const createRoomURL = ServerURL +'/createRoom';
 
 //GET은 여기부터
-const getRoomListURL = LocalURL +'/getRooms';
-const getRoomEnterURL = LocalURL +'/enterRoom/'
+const getRoomListURL = ServerURL +'/getRooms';
+const getRoomEnterURL = ServerURL +'/enterRoom/'
 
 //방 입장
 //TODO : 서버 리다이렉트로 고쳐보기
 const RoomEnter = (roomId) => {
     axios.get(getRoomEnterURL+roomId).then(e =>{
         if(e.data == "Ok")
-            location.href = "http://localhost:3000/Room";
+            location.href = "http://13.124.142.7:3000/Room";
     }).then(() => {
         var param = new URLSearchParams();
         param.append("roomId", roomId);

@@ -18,7 +18,7 @@ const Room = () => {
     const [userss, setUserss] = useState([]);
 
     const rf = useRef();
-    const socket = io("http://localhost:4000");
+    const socket = io("http://13.124.142.7:4000");
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
@@ -40,7 +40,7 @@ const Room = () => {
     //stomp 말고 socket.io로 ㄹ변경
     // const connnect =  (stompClient) => {
     //     console.log(roomId);
-    //     var socket = new Sockjs('http://localhost:8080/music-harmony');
+    //     var socket = new Sockjs('http://13.124.142.7:8080/music-harmony');
     //     stompClient = Stomp.over(socket);
     //     stompClient.connect(
     //         {},
