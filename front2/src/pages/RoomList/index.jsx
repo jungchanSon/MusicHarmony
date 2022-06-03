@@ -4,6 +4,7 @@ import {LocalURL} from "../api/currnetServer";
 import axios from "axios";
 import {GetRooms, RoomEnter} from "../api/roomAPI";
 import UserNameForm from "../../components/User/userNameForm";
+import styled from "styled-components";
 
 const Room = () => {
     const LocalURL = "http://localhost:8080"
@@ -24,16 +25,43 @@ const Room = () => {
 
     return (
         <div>
-            <h1 className={"mb-10"}> 이름을 먼저 적어주세요 </h1>
+            <CenterRayout>
+            <h1 className={"mb-10"}> 이름을 먼저 적어주세요 </h1> <br/>
             <UserNameForm />
-            <h1 className={"mt-10"}>방 목록</h1>
+                <br/><br/>
+
+            <h1 className={"mt-10"}>방 목록</h1><br/><br/>
+                <GridContainer>
             {arrayRoomList.map( (item, key) => (
-                <li key={key} className={"m-4"} id={item.roomId} onClick={enterRoomClick}>
+                <ListCard key={key} className={"m-4"} id={item.roomId} onClick={enterRoomClick}>
                     {item.name}
-                </li>
+                </ListCard>
             ))}
+                </GridContainer>
+            </CenterRayout>
         </div>
     );
 };
+const CenterRayout = styled.div` 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    padding: 5%;
+`
 
+const ListCard = styled.li`
+  margin:10px;
+  list-style: none;
+  padding: 10px;
+  border: 1px solid black;
+  color: black;
+  cursor: pointer;
+`
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: max-content ;
+  
+`
 export default Room;
