@@ -1,4 +1,6 @@
-FROM node:alpine
+FROM node:18-alpine
+
+MAINTAINER jungchan son <rnrmfjc@gmail.com>
 
 WORKDIR /usr/src/app
 

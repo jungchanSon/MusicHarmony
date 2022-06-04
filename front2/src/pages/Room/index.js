@@ -30,7 +30,7 @@ const Room = () => {
     // const peerStreamArray = useRef({});
 
     const {peer, peerStream, setPeer, setStream} = PeerStore();
-
+    const msr=useRef();
     // const [cameraOptions, setCameraOptions] = useState([])
     const cameraOptions = useRef([])
 
@@ -76,6 +76,7 @@ const Room = () => {
             console.log("mySSSS", myStream)
             // setUserStream(myStream);
             setMyVideoStream(myStream);
+            if(msr.current) msr.current.srcObject = myStream;
             if (!AudioId) {
                 await getCameras();
             }
@@ -313,6 +314,7 @@ const Room = () => {
     return(
         <div>
             <h1>Room</h1>
+            <video ref={msr} autoPlay></video>
             <VideoRayoutContainer l={peerStreamArray.length} streamArray={peerStreamArray} myStream={myVideoStream}>
                 {/*<VideoBox stream={myVideoStream} autoPlay></VideoBox>*/}
                 {/*{*/}
