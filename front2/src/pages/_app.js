@@ -10,7 +10,8 @@ import Footer from "../components/Layout/Footer";
 import {isLocalURL} from "next/dist/shared/lib/router/router";
 
 function MyApp({ Component, pageProps }) {
-  return (
+
+    return (
           <ThemeProvider theme={tempTheme}>
               <Head>
                   <title>Create Next App</title>
