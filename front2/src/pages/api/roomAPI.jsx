@@ -5,11 +5,11 @@ import {useState, useEffect} from "react";
 
 
 //POST는 여기부터
-const createRoomURL = ServerURL +'/createRoom';
+const createRoomURL = ServerURL +'createRoom';
 
 //GET은 여기부터
-const getRoomListURL = ServerURL +'/getRooms';
-const getRoomEnterURL = ServerURL +'/enterRoom/'
+const getRoomListURL = ServerURL +'getRooms';
+const getRoomEnterURL = ServerURL +'enterRoom/'
 
 //방 입장
 //TODO : 서버 리다이렉트로 고쳐보기
@@ -21,7 +21,7 @@ const RoomEnter = (roomId) => {
         var param = new URLSearchParams();
         param.append("roomId", roomId);
         param.append("userId", localStorage.getItem("userName"));
-        axios.post(localURL +"/addUser", )
+        axios.post(localURL +"addUser", )
     })
 }
 

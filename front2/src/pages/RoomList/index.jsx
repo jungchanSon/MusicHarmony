@@ -7,7 +7,7 @@ import UserNameForm from "../../components/User/userNameForm";
 import styled from "styled-components";
 
 const Room = () => {
-    const LocalURL = "http://15.165.82.230:8080"
+    const LocalURL = `/api/`
 
     //roomListStore 업데이트
     const {roomList} = RoomStore();
