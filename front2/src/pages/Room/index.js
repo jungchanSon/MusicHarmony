@@ -187,7 +187,6 @@ const Room = () => {
             const pc = peerArray.current[e.sender];
             if (pc)
                 pc.addIceCandidate(e.candidate);
-
         })
 
         socket.on("exit", async (e) =>{
