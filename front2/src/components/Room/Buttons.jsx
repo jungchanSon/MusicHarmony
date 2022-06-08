@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {MediaStreamStore} from "../../store/MediaStreamStore";
 
 const Buttons = () => {
-    const{userStream, setUserStream, setCameraOff} =MediaStreamStore();
+    const{userStream} =MediaStreamStore();
 
     const handleCameraBtn = () => {
         userStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));

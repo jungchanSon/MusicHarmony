@@ -1,19 +1,13 @@
 import React, {useState} from 'react';
 import styled from "styled-components";
-import connnect from '/src/pages/api/socketConnect'
 import {CreateRoom} from '../api/roomAPI'
 
 
 const MakeRoom = () => {
     const [title, setTitle] = useState("");
 
-    // var stompClient = null;
-    // connnect(stompClient);
-    // stompClient.send()
-
     const createSubmit = (e) => {
         e.preventDefault();
-        console.log(title);
         CreateRoom(title);
         setTitle("")
     }
@@ -32,7 +26,6 @@ const MakeRoom = () => {
                     />
                     <FormButon onClick={createSubmit} className={"active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"}>개설하기</FormButon>
                 </RoomForm>
-            {/*<button onClick={updatetemp(response)}></button>*/}
             </CenterRayout>
         </div>
     );

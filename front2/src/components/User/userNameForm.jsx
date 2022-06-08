@@ -1,13 +1,8 @@
 import styled from "styled-components";
 import {useState} from "react";
-import {CreateRoom} from "../../pages/api/roomAPI";
 
 const UserNameForm = () => {
     const [name, setName] = useState("");
-
-    // var stompClient = null;
-    // connnect(stompClient);
-    // stompClient.send()
 
     const submitForm = (e) => {
         e.preventDefault();

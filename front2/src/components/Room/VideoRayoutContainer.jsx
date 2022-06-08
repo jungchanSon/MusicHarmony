@@ -1,9 +1,7 @@
 import styled, {css} from "styled-components";
-import React, {useEffect, useRef, useState} from "react";
 import VideoBox from "./VideoBox";
 
 const VideoRayoutContainer = ({l, streamArray, myStream}) => {
-    console.log("llllll", l)
     return (
         <>
             <RayoutContainer l={l} w={20}>

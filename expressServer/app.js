@@ -1,40 +1,26 @@
-// const http = require('http');
-// const express = require('express');
-// const Server = require('socket.io');
-// const cors = require('cors');
-//
-// const app = express();
-// app.use((req, res) => {
-//     res.header("Access-Control-Allow-Origin", "*"); // 모든 도메인 허용
-// });
-// app.get("/", (req, res) => {
-//     res.send({ response: 'Server is up and running' }).status(200)
-// });
-// const httpServer = http.createServer(app);
-// const wsServer = Server(httpServer);
-//
-//
-//
-//
-//
-// wsServer.on("connection", socket => {
-//     socket.on("offer", (data) => console.log(data))
-// });
-// httpServer.listen(8000, () => console.log("app.open"));
 
 const express = require('express')
 const socketio = require('socket.io')
-const http = require('http')
+const http = require('https')
 
 const cors = require('cors')
 const router = require('./router')
 const axios = require("axios");
+const fs = require('fs');
+const options = {
+    key: fs.readFileSync('./localhost.pem',"utf-8"),
+    cert: fs.readFileSync('./localhost-key.pem', "utf-8")
+};
 
 const PORT = process.env.PORT || 4000
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const app = express()
-const server = http.createServer(app)
+const server = http.createServer({
+        key: fs.readFileSync(__dirname + '/key.pem', 'utf-8'),
+        cert: fs.readFileSync(__dirname + '/cert.pem', 'utf-8'),
+    },
+    app)
 const io = socketio(server,{
     cors:{
         origin:"*",
@@ -50,9 +36,9 @@ io.on('connection', (socket) => {
     socket.on("join", (roomId)=> {
         socket.join(roomId);
         room[socket.id] = roomId;
-        axios.post("http://15.165.82.230:8080/addUser", {"roomId":roomId,"userName":socket.id } )
+        axios.post("https://10.20.11.94:8080/addUser", {"roomId":roomId,"userName":socket.id } )
             .then( () =>{
-                axios.get("http://15.165.82.230:8080/getUsers/"+roomId).then(e => {
+                axios.get("https://10.20.11.94:8080/getUsers/"+roomId).then(e => {
                     let users = e.data;
                     socket.to(roomId).emit("welcome", socket.id);
                     console.log("users", users);
@@ -62,8 +48,6 @@ io.on('connection', (socket) => {
             .catch((e) => {
                 console.log(e)
             })
-        // socket.to(roomId).emit("welcome");
-        // console.log(room.key)
     });
 
     socket.on("offer", (roomId, e) => {
@@ -86,7 +70,7 @@ io.on('connection', (socket) => {
         console.log("disconnt")
         if(room[socket.id]){
             const roomId = room[socket.id];
-            axios.post("http://15.165.82.230:8080/removeUser", {"roomId":roomId , "userName":socket.id});
+            axios.post("https://10.20.11.94:8080/removeUser", {"roomId":roomId , "userName":socket.id});
 
             delete room[socket.id];
 

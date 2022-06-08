@@ -6,36 +6,6 @@ let socket
 
 const MainPage = () => {
 
-    const [test, setTest] = useState({});
-    //
-    // const tests = async () => {
-    //     const devices = await navigator.mediaDevices.enumerateDevices();
-    //     if (navigator.requestMIDIAccess) {
-    //         alert('This browser supports WebMIDI!');
-    //         await navigator.requestMIDIAccess().then((access) => {
-    //             const input = access.inputs.values();
-    //             const output= access.outputs.values();
-    //             access.onstatechange = event => {
-    //
-    //                 // Print information about the (dis)connected MIDI controller
-    //                 console.log(event.port.name, event.port.manufacturer, event.port.state);
-    //             };
-    //             console.log(access.inputs);
-    //         })
-    //     }
-    //     console.log(devices);
-    // }
-
-    // useEffect( () => {
-    //     setTest({
-    //         ...test,
-    //         123:123
-    //     })
-    //
-    //     tests();
-    // }, [])
-
-    console.log( test )
     return (
         <div className="flex flex-col justify-center content-center">
             <Session >

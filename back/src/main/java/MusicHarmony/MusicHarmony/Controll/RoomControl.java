@@ -18,9 +18,6 @@ public class RoomControl {
     private final RoomRepoImpl roomRepo;
     private final RoomService roomService;
 
-    String localUrl = "localhost";
-    String server = "";
-
     //방만들기
     @PostMapping("/createRoom")
     @ResponseBody
@@ -66,16 +63,4 @@ public class RoomControl {
     public void removeUser(@RequestBody Map<String, String> map){
         roomService.removeUser(map.get("roomId"), map.get("userName"));
     }
-
-
-    //Test들~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-//    @PostMapping("/create")
-//    @ResponseBody
-//    public Room createRoom(@RequestBody Map<String,String> name) {
-//        System.out.println(name.get("name"));
-//        return roomService.createRoom(name.get("name"));
-//    }
 }

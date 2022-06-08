@@ -3,8 +3,6 @@ import styled from "styled-components";
 
 
 const Nav = () => {
-    // let path = window.location.pathname;
-
     return(
         <>
             <nav className="flex justify-center space-x-4" >

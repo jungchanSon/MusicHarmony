@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
-import {UserStore} from "../../store/UserStore";
 import {MediaStreamStore} from "../../store/MediaStreamStore";
 import styled from "styled-components";
 
 const UserVideo = (props) => {
-    const{userStream, setUserStream} =MediaStreamStore();
+    const{userStream } =MediaStreamStore();
     const videoRef=useRef();
 
     if(userStream !== null){

@@ -9,6 +9,7 @@ import styled from "styled-components";
 const Room = () => {
     const LocalURL = `/api/`
 
+
     //roomListStore 업데이트
     const {roomList} = RoomStore();
     GetRooms();
@@ -21,13 +22,12 @@ const Room = () => {
 
         RoomEnter(e.target.id);
     }
-    // console.log("page", window.location.pathname)
 
     return (
         <div>
             <CenterRayout>
-            <h1 className={"mb-10"}> 이름을 먼저 적어주세요 </h1> <br/>
-            <UserNameForm />
+            {/*<h1 className={"mb-10"}> 이름을 먼저 적어주세요 </h1> <br/>*/}
+            {/*<UserNameForm />*/}
                 <br/><br/>
 
             <h1 className={"mt-10"}>방 목록</h1><br/><br/>
